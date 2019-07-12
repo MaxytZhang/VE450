@@ -5,7 +5,7 @@
 		max-height="500">
 	<el-table-column type="expand">
 		<template slot-scope="props">
-			<el-form :inline="true" :model="formInline" label-position="left" inline class="demo-table-expand">
+			<el-form :inline="true" :model="formInline" label-position="left" class="demo-table-expand">
 				<el-form-item label="Name">
 					<span>{{ props.row.name }}</span>
 				</el-form-item>

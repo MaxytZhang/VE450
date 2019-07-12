@@ -18,7 +18,7 @@
             </el-collapse>
             <el-button type="primary" plain="" @click="load">More</el-button>
         </div>
-            <el-button align="bottom">Log out</el-button>
+            <el-button align="bottom" @click="log_out">Log out</el-button>
         </el-row>
     </div>
     </div>
@@ -39,6 +39,9 @@
                     this.count += 4
                 }
             },
+            log_out () {
+                this.$router.push("/")
+            }
         }
     }
 </script>

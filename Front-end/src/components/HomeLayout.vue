@@ -11,8 +11,7 @@
             <HomeHeader/>
             </el-header>
             <el-main>
-            <!--<HomeMain/>-->
-                <router-view></router-view>
+            <router-view></router-view>
             </el-main>
             <el-footer>
             <HomeFooter/>

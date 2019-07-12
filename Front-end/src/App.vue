@@ -14,18 +14,21 @@
       <!--<li><router-link to="/">Hello页面</router-link></li>-->
       <!--<li><router-link to="/word">word页面</router-link></li>-->
     <!--</ul>-->
-    <!--<router-view></router-view>-->
-    <HomeLayout/>
+    <!--<Login></Login>-->
+    <router-view></router-view>
+    <!--<HomeLayout/>-->
   </div>
 </template>
 
 <script>
 import HelloWorld from './components/HelloWorld.vue'
 import HomeLayout from './components/HomeLayout'
+import Login from './components/Login'
 
 export default {
   name: 'app',
   components: {
+      Login,
       HomeLayout
   }
 }
@@ -37,7 +40,7 @@ export default {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  text-align: left;
   color: #2c3e50;
   margin-top: 60px;
 }
