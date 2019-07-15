@@ -55,7 +55,6 @@ tasks = [
 ]
 
 
-
 '''
 @app.route("/todo/api/v1.0/tasks", methods=["GET"])
 def read_tasks_documentation():
