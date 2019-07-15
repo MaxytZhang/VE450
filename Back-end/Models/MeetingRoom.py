@@ -3,9 +3,9 @@ import datetime
 
 
 class MeetingRoom:
-    def __init__(self, id, location, size, capacity, occupancy, remote, hardware):
+    def __init__(self, id, site, size, capacity, occupancy, remote, hardware):
         self.id = id
-        self.location = location
+        self.site = site
         self.size = size
         self.capacity = capacity
         self.occupancy = occupancy

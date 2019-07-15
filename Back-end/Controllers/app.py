@@ -67,16 +67,16 @@ tasks = [
 '''JSON for meetings'''
 meetings = [
     {
-        'id' : 0,
-        'name' : 'Test',
-        'topic' : 'Test for add/delete for a meeting.',
-        'rooms site & id' : [site-room1, site-room2,...],
-        'date' : '2019/07/14',
-        'start time' : '11:30am',
-        'end time' : '1:30pm',
-        'attendee id': [id1, id2, id3,...],
-        'is routine' : 0,
-        'need hw support' : 1
+        "id": 0,
+        "name": "Test",
+        "topic": "Test for add/delete for a meeting.",
+        "roomsSiteAndId": [site-room1, site-room2,...],
+        "date": "2019/07/14",
+        "startTime": "11:30am",
+        "endTime": "1:30pm",
+        "attendeeId": [id1, id2, id3,...],
+        "isRoutine": 0,
+        "needHwSupport": 1
     }
 ]
 

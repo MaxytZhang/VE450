@@ -3,7 +3,8 @@ import datetime
 
 
 class Meeting:
-    def __init__(self, meeting_id, meeting_name, meeting_topic, meeting_room_id, start_time, end_time, is_routine, requires):
+    def __init__(self, meeting_id, meeting_name, meeting_topic, meeting_room_id, start_time, end_time, is_routine,
+                 requires):
         self.id = meeting_id
         self.meeting_name = meeting_name
         self.meeting_topic = meeting_topic
@@ -50,17 +51,22 @@ class Meeting:
 
     def recommend(self):
         site_attendees = {}
+
+        # Count the number of people in each site
         for member in self.attendees:
             if member['site'] in site_attendees:
                 site_attendees[member['site']] += 1
             else:
                 site_attendees[member['site']] = 1
 
+        site_recommend_list = {}
         for site_id in self.sites:
+            site_recommend_list[site_id] = []
             for room_id in meeting_room_list[site_id]:
                 if room_id.meet_requirements(len(site_attendees[site_id]), self.requires, self.start_time,
                                              self.end_time):
-                    self.meeting_room_id.append(room_id.id)
+                    site_recommend_list[site_id].append(room_id.id)
+        return site_recommend_list
 
     def modify(self, meeting_name, meeting_topic, date, start_time, end_time, attendees, is_routine):
         flag = self.start_time == start_time and self.end_time == end_time and self.attendees == attendees
@@ -83,4 +89,3 @@ class Meeting:
             meeting_room_list[room_id].set_schedule(self.id, self.end_time, self.end_time + extend_time)
         self.end_time = self.end_time + extend_time
         return True
-
