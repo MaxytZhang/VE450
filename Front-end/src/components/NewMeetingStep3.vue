@@ -58,7 +58,10 @@
 
                 ],
                 props: {multiple: true},
+                active: 2
             }
+        },
+        created() {
         }
     }
 </script>

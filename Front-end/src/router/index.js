@@ -31,6 +31,7 @@ export default new VueRouter({
                     children: [
                         {
                             path:'/new_meeting',
+                            // redirect: '/new_meeting/step1',
                             component: NewMeetingStep1,
                         },
                         {

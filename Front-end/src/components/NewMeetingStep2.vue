@@ -6,7 +6,7 @@
                 <span>Meeting Outline #{{i}}</span>
             </el-col>
             <el-col :span="10">
-                <el-input class="input" v-model="input" placeholder="Please enter outline">
+                <el-input class="input" v-model="inputs[i-1]" :value="'test_' + i" placeholder="Please enter outline">
                     <!--<el-select size="300px" v-model="select" slot="prepend" placeholder="Period">-->
                         <!--<el-option label="5" value="1"></el-option>-->
                         <!--<el-option label="10" value="2"></el-option>-->
@@ -37,8 +37,9 @@
         name: "NewMeetingStep2",
         data() {
             return {
+                active: 1,
                 count: 1,
-                input: '',
+                inputs: [''],
                 textarea1: '',
                 select:''
             }
@@ -46,9 +47,11 @@
         methods: {
             minus() {
                 this.count--;
+                this.inputs.pop();
             },
             add(){
                 this.count++;
+                this.inputs.push('');
             },
         }
     }

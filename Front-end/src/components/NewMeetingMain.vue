@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-row type="flex" class="step"></el-row>
-        <el-steps :active="active" finish-status="success">
+        <el-steps :active="calActive" finish-status="success">
             <el-step title="Step 1"></el-step>
             <el-step title="Step 2"></el-step>
             <el-step title="Step 3"></el-step>
@@ -31,33 +31,60 @@
         },
         methods: {
             next() {
+                if (this.active < 3) this.active++;
                 console.log((this.active));
                 if (this.active === 1) this.finish = 'Submit';
-                if (this.active < 2) this.active++;
+                else if (this.active === 2) this.finish = 'Finish';
                 if (this.active > 0) this.show_pre = true;
-                this.$router.push("/new_meeting/step" + (this.active + 1).toString())
+                if (this.active < 3) {
+                    this.$router.push("/new_meeting/step" + (this.active + 1).toString());
+                }
+                if (this.active === 2) {
+                    this.$notify({
+                        type: 'success',
+                        message: 'Submit successfully!',
+                        duration: 3000
+                    });
+                }
+                if (this.active === 3) {
+                    this.$notify({
+                        type: 'success',
+                        message: 'You have successfully started a new meeting',
+                        duration: 3000
+                    });
+                    this.active--;
+                }
             },
             pre() {
                 if (this.active > 0) this.active--;
-                if (this.active === 0) this.show_pre = false;
-                this.$router.push("/new_meeting/step" + (this.active + 1).toString())
+                console.log(this.active);
+                if (this.active === 0) {
+                    this.show_pre = false;
+                    this.finish = 'Next'
+                }
+                if (this.active === 1){
+                    this.finish = 'Submit'
+                }
+                this.$router.push("/new_meeting/step" + (this.active + 1).toString());
+
             },
-            // change(selected) {
-            //     console.log(selected);
-            //     for (let i of this.options){
-            //         for (let j of selected){
-            //             if (j[0] == 'history') {
-            //                 for (let option of i.children) {
-            //                     if (i.value != 'history' && option.value == j[1]) {
-            //                         this.selected.push([i.value, option.value]);
-            //                         break
-            //                     }
-            //                 }
-            //             }
-            //         }
-            //     }
-            // }
         },
+        computed: {
+            calActive() {
+                if (this.$route.path === '/new_meeting'){
+                    return 0
+                }
+                else if (this.$route.path === '/new_meeting/step1'){
+                    return 0
+                }
+                else if (this.$route.path === '/new_meeting/step2'){
+                    return 1
+                }
+                else if (this.$route.path === '/new_meeting/step3'){
+                    return 2
+                }
+            }
+        }
     }
 </script>
 
