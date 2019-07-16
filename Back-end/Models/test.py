@@ -200,8 +200,8 @@ if __name__ == '__main__':
             "site": 3
         },
     }
-    siteList = {
-        "site_1": {
+    siteList = [
+        {
             "name": "SongJiang",
             "meetingRoom": [
                 "site_1_1",
@@ -212,7 +212,7 @@ if __name__ == '__main__':
             ],
             "roomNumber": 5
         },
-        "site_2": {
+        {
             "name": "LinGang",
             "meetingRoom": [
                 "site_2_1",
@@ -223,7 +223,7 @@ if __name__ == '__main__':
             ],
             "roomNumber": 5
         },
-        "site_3": {
+        {
             "name": "JI",
             "meetingRoom": [
                 "site_3_1",
@@ -231,7 +231,7 @@ if __name__ == '__main__':
             ],
             "roomNumber": 2
         }
-    }
+    ]
     currentMeeting = Meeting.Meeting()
     currentMeeting.id = 1
     currentMeeting.meeting_name = generate_name(1)
@@ -244,11 +244,31 @@ if __name__ == '__main__':
     currentMeeting.status = -1  # before, during, after
     currentMeeting.is_routine = False
     currentMeeting.requires = False
-    currentMeeting.sites = []
+    currentMeeting.sites = [1, 2, 3]
     currentMeeting.outline = []  # list of strings
     currentMeeting.initiator = 1
     currentMeeting.memo = {}
-    print(currentMeeting.id)
-    print(currentMeeting.attendees)
+    # print(currentMeeting.id)
+    # print(currentMeeting.attendees)
 
-    recommendation, flag = currentMeeting.recommend()
+    recommendation, flag = currentMeeting.recommend(meetingRoom, siteList)
+    if recommendation == {}:
+        print("No recommendation available, please try some other time.")
+    elif flag == 0:
+        print("The recommended rooms are:")
+        for site_id in recommendation:
+            print(siteList[site_id-1]['name']+':')
+            for room_key in siteList[site_id-1]['meetingRoom']:
+                if meetingRoom[room_key]['id'] in recommendation[site_id]:
+                    print(meetingRoom[room_key]['name'])
+            print('')
+    elif flag == 1:
+        print("We have lowered the capacity to schedule the meeting.\n")
+        print("The recommended rooms are:")
+        for site_id in recommendation:
+            print(siteList[site_id-1]['name']+':')
+            for room_key in siteList[site_id-1]['meetingRoom']:
+                if meetingRoom[room_key]['id'] in recommendation[site_id]:
+                    print(meetingRoom[room_key]['name'])
+            print('')
+

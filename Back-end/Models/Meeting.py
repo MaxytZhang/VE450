@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import datetime
-
+import json
 
 class Meeting:
     def __init__(self):
@@ -51,38 +51,50 @@ class Meeting:
                         my_meeting_room.change_schedule(self.id, current_time)
         self.end_time = current_time
 
-    def recommend(self):
+    def recommend(self, meeting_room_list, site_list):
         site_attendees = {}
 
         # Count the number of people in each site
         for member in self.attendees:
-            if member['site'] in site_attendees:
-                site_attendees[member['site']] += 1
+            if self.attendees[member]['site'] in site_attendees:
+                site_attendees[self.attendees[member]['site']] += 1
             else:
-                site_attendees[member['site']] = 1
+                site_attendees[self.attendees[member]['site']] = 1
+        for site_id in site_attendees:
+            print('' + str(site_attendees[site_id]) + ' people in site ' + str(site_id) + ' need to attend the meeting.')
 
         site_recommend_list = {}
         limitation_flag = False  # see if the solution can be find
         for site_id in self.sites:
             site_recommend_list[site_id] = []
-            for room_id in meeting_room_list[site_id]:
-                if room_id.meet_requirements(len(site_attendees[site_id]), self.requires, self.start_time,
-                                             self.end_time):
-                    site_recommend_list[site_id].append(room_id.id)
+            for room_id in site_list[site_id-1]['meetingRoom']:
+                # if room_id.meet_requirements(len(site_attendees[site_id]), self.requires, self.start_time,
+                #                              self.end_time):
+                #     site_recommend_list[site_id].append(room_id.id)
+                if meeting_room_list[room_id]['hardware'] == 1 and meeting_room_list[room_id]['capacity'] >= site_attendees[site_id]:
+                    site_recommend_list[site_id].append(meeting_room_list[room_id]['id'])
             if not site_recommend_list[site_id]:
+                print('\nThere\'s no meeting room available for site ' + str(site_id))
                 limitation_flag = True
-                break
 
         # if no recommendation, try again without capacity restriction
         if limitation_flag:
             for site_id in self.sites:
-                site_recommend_list[site_id] = []
-                for room_id in meeting_room_list[site_id]:
-                    if room_id.meet_requirements(0, self.requires, self.start_time,
-                                                 self.end_time):
-                        site_recommend_list[site_id].append(room_id.id)
-                if not site_recommend_list[site_id]:
-                    return {}, True
+                if site_recommend_list[site_id] == []:
+                    room_flag = ''
+                    for room_id in site_list[site_id-1]['meetingRoom']:
+                        # if room_id.meet_requirements(0, self.requires, self.start_time,
+                        #                              self.end_time):
+                        #     site_recommend_list[site_id].append(room_id.id)
+                        if meeting_room_list[room_id]['hardware'] == 1 and meeting_room_list[room_id]['capacity'] >= 0:
+                            if room_flag == '':
+                                room_flag = room_id
+                            else:
+                                if meeting_room_list[room_id]['capacity'] > meeting_room_list[room_flag]['capacity']:
+                                    room_flag = room_id
+                    site_recommend_list[site_id].append(meeting_room_list[room_flag]['id'])
+                    if not site_recommend_list[site_id]:
+                        return {}, True
         return site_recommend_list, limitation_flag
 
     def modify(self, meeting_name, meeting_topic, date, start_time, end_time, attendees, is_routine):
