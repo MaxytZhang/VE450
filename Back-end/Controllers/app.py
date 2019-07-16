@@ -109,9 +109,9 @@ def initiate_recommend():
     recommendation, flag = new_meeting.recommend()
     if recommendation == {}:
         return jsonify("No recommendation available, please try some other time.")
-    else if flag == 0:
+    elif flag == 0:
         return jsonify(recommendation)
-    else if flag == 1:
+    elif flag == 1:
         return jsonify(["We have lowered the capacity to schedule the meeting",recommendation])
 
 def convert_date(tstp):
