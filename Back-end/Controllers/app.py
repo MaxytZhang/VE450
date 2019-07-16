@@ -1,5 +1,8 @@
 #!flask/bin/python
 from flask import Flask, jsonify, abort, request
+import meeting
+import json
+import requests
 import MySQLdb
 
 app = Flask(__name__)
@@ -54,6 +57,39 @@ tasks = [
     }
 ]
 
+'''JSON data for a meeting - string'''
+# you can also use the open function to read the content of a JSON file to a string
+json_meeting = """{
+    "id" : 0,
+    "meeting_name" : "meeting_1",
+    "meeting_topic" : "design review 3 is killing me",
+    "date" : 0byyyyyyymmmmddddd,
+    "start_time" : 0bhhhhhmmmmmm,
+    "end_time" : 0bhhhhhmmmmmm,
+    "attendees" : [id1, id2, id3,...],
+    "status" : -1,
+    "is routine" : 0,
+    "need hw support" : 1,
+    "sites" : [id1, id2, ...]
+}"""
+
+'''initiate a new meeting'''
+@app.route('/backend/api/v1.0/meetings', methods=['POST'])
+def initiate_recommend():
+    #initiate a meeting
+    if not request.json or not 'title' in request.json:
+        abort(400)
+    new_meeting = Meeting()
+    new_meeting.id = #read from database the largest id and +1
+    new_meeting.meeting_name = request.json["meeting_name"]
+    new_meeting.meeting_topic = request.json["meeting_topic"]
+    new_meeting.date = convert_date(request.json["date"]) #data type?
+    new_meeting.start_time = convert_time(request.json["start_time"])
+    new_meeting.end_time = convert_time(request.json["end_time"])
+    new_meeting.is_routine = request.json["is routine"]
+    new_meeting.requires = request.json["need hw support"]
+    new_meeting.sites = request.json["sites"]
+    #recommend
 
 '''
 @app.route("/todo/api/v1.0/tasks", methods=["GET"])
