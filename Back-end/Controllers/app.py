@@ -63,14 +63,16 @@ json_meeting = """{
     "id" : 0,
     "meeting_name" : "meeting_1",
     "meeting_topic" : "design review 3 is killing me",
-    "date" : 0byyyyyyymmmmddddd,
-    "start_time" : 0bhhhhhmmmmmm,
-    "end_time" : 0bhhhhhmmmmmm,
-    "attendees" : [id1, id2, id3,...],
+    "start_timestamp" : 1232440958,
+    "end_timestamp" : 1232440960,
+    "attendees" : {id1:{"status":-1,"feedback":"coming","role":"staff","site":11},id2:{"status":-1,"feedback":"coming","role":"staff","site":1},...},
     "status" : -1,
     "is routine" : 0,
     "need hw support" : 1,
-    "sites" : [id1, id2, ...]
+    "sites" : [id1, id2, ...],
+    "meeting memo" : {id1 : "memo1", id2 : "memo2", ...},
+    "meeting outline" : ["outline1", "outline2", ...],
+    "initiator" : 1239084(id)
 }"""
 
 '''initiate a new meeting'''
@@ -83,13 +85,14 @@ def initiate_recommend():
     new_meeting.id = #read from database the largest id and +1
     new_meeting.meeting_name = request.json["meeting_name"]
     new_meeting.meeting_topic = request.json["meeting_topic"]
-    new_meeting.date = convert_date(request.json["date"]) #data type?
-    new_meeting.start_time = convert_time(request.json["start_time"])
-    new_meeting.end_time = convert_time(request.json["end_time"])
+    new_meeting.date = convert_date(request.json["start_timestamp"])
+    new_meeting.start_time = convert_time(request.json["start_timestamp"])
+    new_meeting.end_time = convert_time(request.json["end_timestamp"])
     new_meeting.is_routine = request.json["is routine"]
     new_meeting.requires = request.json["need hw support"]
     new_meeting.sites = request.json["sites"]
     #recommend
+    
 
 '''
 @app.route("/todo/api/v1.0/tasks", methods=["GET"])

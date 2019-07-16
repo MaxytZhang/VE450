@@ -7,7 +7,7 @@ class Attendee:
         self.status = status
         self.feedback = feedback
         self.role = role
-        self.file = ''
+        #self.file = []
         self.site = site
 
     def get_feedback(self, feedback):

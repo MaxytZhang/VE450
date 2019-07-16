@@ -12,12 +12,15 @@ class Meeting:
         self.date = datetime.date
         self.start_time = start_time
         self.end_time = end_time
-        self.attendees = []
+        self.attendees = {}
         self.priority = 0
-        self.status = -1
+        self.status = -1 #before, during, after
         self.is_routine = is_routine
         self.requires = requires
         self.sites = []
+        self.outline = [] #list of strings
+        self.initiator = 1239
+        self.memo = {}
 
     @staticmethod
     def reminder(self):
