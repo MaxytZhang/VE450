@@ -1,9 +1,10 @@
 #!flask/bin/python
 from flask import Flask, jsonify, abort, request
-import meeting
+import Meeting
 import json
 import requests
 import MySQLdb
+import datetime
 
 app = Flask(__name__)
 
@@ -63,33 +64,67 @@ json_meeting = """{
     "id" : 0,
     "meeting_name" : "meeting_1",
     "meeting_topic" : "design review 3 is killing me",
-    "date" : 0byyyyyyymmmmddddd,
-    "start_time" : 0bhhhhhmmmmmm,
-    "end_time" : 0bhhhhhmmmmmm,
-    "attendees" : [id1, id2, id3,...],
+    "meeting_rooms" : {site1:id1, site2:id2,...},
+    "start_timestamp" : 1232440958,
+    "end_timestamp" : 1232440960,
+    "attendees" : {id1:{"status":-1,"feedback":"coming","role":"staff","site":11},id2:{"status":-1,"feedback":"coming","role":"staff","site":1},...},
     "status" : -1,
-    "is routine" : 0,
-    "need hw support" : 1,
-    "sites" : [id1, id2, ...]
+    "is_routine" : 0,
+    "need_hw_support" : 1,
+    "sites" : [id1, id2, ...],
+    "meeting_memo" : {id1 : "memo1", id2 : "memo2", ...},
+    "meeting_outline" : ["outline1", "outline2", ...],
+    "initiator" : 1239084(id)
+}"""
+
+json_recommendation = """{
+    site_id1 : [room_id1, room_id2,...],
+    site_id2 : [room_id1, room_id2,...]
 }"""
 
 '''initiate a new meeting'''
 @app.route('/backend/api/v1.0/meetings', methods=['POST'])
 def initiate_recommend():
     #initiate a meeting
-    if not request.json or not 'title' in request.json:
+    if not request.json:
         abort(400)
+    meeting_info = json.loads(json_meeting)
     new_meeting = Meeting()
-    new_meeting.id = #read from database the largest id and +1
-    new_meeting.meeting_name = request.json["meeting_name"]
-    new_meeting.meeting_topic = request.json["meeting_topic"]
-    new_meeting.date = convert_date(request.json["date"]) #data type?
-    new_meeting.start_time = convert_time(request.json["start_time"])
-    new_meeting.end_time = convert_time(request.json["end_time"])
-    new_meeting.is_routine = request.json["is routine"]
-    new_meeting.requires = request.json["need hw support"]
-    new_meeting.sites = request.json["sites"]
+    new_meeting.id = 1#read from database the largest id and +1
+    #if the user did not input the name
+    if meeting_info["meeting_name"] == "":
+        meeting_info["meeting_name"] = generate_name(new_meeting.id)
+    new_meeting.meeting_name = meeting_info["meeting_name"]
+    new_meeting.meeting_topic = meeting_info["meeting_topic"]
+    new_meeting.date = convert_date(meeting_info["start_timestamp"])
+    new_meeting.start_time = convert_time(meeting_info["start_timestamp"])
+    new_meeting.end_time = convert_time(meeting_info["end_timestamp"])
+    new_meeting.is_routine = meeting_info["is_routine"]
+    new_meeting.requires = meeting_info["need_hw_support"]
+    new_meeting.sites = meeting_info["sites"]
+    new_meeting.meeting_outline = meeting_info["meeting_outline"]
+    new_meeting.initiator = meeting_info["initiator"]
+    new_meeting.attendees = meeting_info["attendees"]
     #recommend
+    recommendation, flag = new_meeting.recommend()
+    if recommendation == {}:
+        return jsonify("No recommendation available, please try some other time.")
+    elif flag == 0:
+        return jsonify(recommendation)
+    elif flag == 1:
+        return jsonify(["We have lowered the capacity to schedule the meeting",recommendation])
+
+def convert_date(tstp):
+    time = datetime.datetime.fromtimestamp(tstp)
+    return time.date()
+
+def convert_time(tstp):
+    time = datetime.datetime.fromtimestamp(tstp)
+    #convert the time slots to 0-95
+    return (time.hour*4 + time.minute/15)
+
+def generate_name(id):
+    return ("Meeting_" + str(id))
 
 '''
 @app.route("/todo/api/v1.0/tasks", methods=["GET"])
