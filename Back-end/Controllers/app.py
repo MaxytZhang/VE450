@@ -82,6 +82,20 @@ json_recommendation = """{
     site_id2 : [room_id1, room_id2,...]
 }"""
 
+
+'''helper functions'''
+def convert_date(tstp):
+    time = datetime.datetime.fromtimestamp(tstp)
+    return time.date()
+
+def convert_time(tstp):
+    time = datetime.datetime.fromtimestamp(tstp)
+    #convert the time slots to 0-95
+    return (time.hour*4 + time.minute/15)
+
+def generate_name(id):
+    return ("Meeting_" + str(id))
+
 '''initiate a new meeting'''
 @app.route('/backend/api/v1.0/meetings', methods=['POST'])
 def initiate_recommend():
@@ -114,17 +128,7 @@ def initiate_recommend():
     elif flag == 1:
         return jsonify(["We have lowered the capacity to schedule the meeting",recommendation])
 
-def convert_date(tstp):
-    time = datetime.datetime.fromtimestamp(tstp)
-    return time.date()
 
-def convert_time(tstp):
-    time = datetime.datetime.fromtimestamp(tstp)
-    #convert the time slots to 0-95
-    return (time.hour*4 + time.minute/15)
-
-def generate_name(id):
-    return ("Meeting_" + str(id))
 
 '''
 @app.route("/todo/api/v1.0/tasks", methods=["GET"])
