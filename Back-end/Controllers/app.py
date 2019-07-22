@@ -148,7 +148,9 @@ def initiate_recommend():
             {"message":"We have lowered the capacity to schedule the meeting",
             "recommendation" : recommendation}))
 
-
+@app.route('/backend/api/v1.0/test', methods=['POST'])
+def test():
+    return jsonify(make_package("message","Connected."))
 
 '''
 @app.route("/todo/api/v1.0/tasks", methods=["GET"])
