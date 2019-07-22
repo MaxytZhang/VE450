@@ -119,8 +119,9 @@ def initiate_recommend():
     if not request.json:
         abort(400)
     package = json.loads(json_package)
-    if not package["type"] == "meeting"
+    if not package["type"] == "meeting":
         return jsonify(make_package("error","error - sending wrong data"))
+    meeting_info = package["meeting"]
     new_meeting = Meeting()
     if meeting_info["meeting_name"] == "":
         meeting_info["meeting_name"] = generate_name(new_meeting.id)
@@ -163,7 +164,6 @@ def get_task(task_id):
     if len(task) == 0:
         abort(404)
     return jsonify({"task": task[0]})
-
+'''
 if __name__ == "__main__":
     app.run(debug=True)
-'''
