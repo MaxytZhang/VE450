@@ -3,8 +3,10 @@ from flask import Flask, jsonify, abort, request
 import Meeting
 import json
 import requests
-import MySQLdb
 import datetime
+import mysql.connector
+from mysql.connector import Error
+
 
 app = Flask(__name__)
 
@@ -82,16 +84,44 @@ json_recommendation = """{
     site_id2 : [room_id1, room_id2,...]
 }"""
 
+json_package = """{
+    "type" : "meeting" / "message" / "recommendation" / "error"
+    "meeting" : json_meeting
+    ...
+}"""
+
+'''helper functions & variables'''
+length_of_employeeid = 8.;
+
+def convert_date(tstp):
+    time = datetime.datetime.fromtimestamp(tstp)
+    return time.date()
+
+def convert_time(tstp):
+    time = datetime.datetime.fromtimestamp(tstp)
+    #convert the time slots to 0-95
+    return (time.hour*4 + time.minute/15)
+
+def generate_name(id):
+    return ("Meeting_" + str(id))
+
+def make_package(type, info):
+    package = {
+        "type" : type,
+        type : info
+    }
+    return package
+
 '''initiate a new meeting'''
 @app.route('/backend/api/v1.0/meetings', methods=['POST'])
 def initiate_recommend():
     #initiate a meeting
     if not request.json:
         abort(400)
-    meeting_info = json.loads(json_meeting)
+    package = json.loads(json_package)
+    if not package["type"] == "meeting"
+        return jsonify(make_package("error","error - sending wrong data"))
     new_meeting = Meeting()
-    new_meeting.id = 1#read from database the largest id and +1
-    #if the user did not input the name
     if meeting_info["meeting_name"] == "":
         meeting_info["meeting_name"] = generate_name(new_meeting.id)
     new_meeting.meeting_name = meeting_info["meeting_name"]
@@ -105,26 +135,22 @@ def initiate_recommend():
     new_meeting.meeting_outline = meeting_info["meeting_outline"]
     new_meeting.initiator = meeting_info["initiator"]
     new_meeting.attendees = meeting_info["attendees"]
+    new_meeting.id = meeting_info["start_timestamp"] * length_of_employeeid 
+                    + meeting_info["initiator"] #meeting id = timestamp + initiator id
     #recommend
     recommendation, flag = new_meeting.recommend()
     if recommendation == {}:
-        return jsonify("No recommendation available, please try some other time.")
+        return jsonify(make_package("message","No recommendation available, please try some other time."))
     elif flag == 0:
-        return jsonify(recommendation)
+        return jsonify(make_package("recommendation",recommendation))
     elif flag == 1:
-        return jsonify(["We have lowered the capacity to schedule the meeting",recommendation])
+        return jsonify(make_package("message and recommendation",
+            {"message":"We have lowered the capacity to schedule the meeting",
+            "recommendation" : recommendation}))
 
-def convert_date(tstp):
-    time = datetime.datetime.fromtimestamp(tstp)
-    return time.date()
-
-def convert_time(tstp):
-    time = datetime.datetime.fromtimestamp(tstp)
-    #convert the time slots to 0-95
-    return (time.hour*4 + time.minute/15)
-
-def generate_name(id):
-    return ("Meeting_" + str(id))
+@app.route('/backend/api/v1.0/test', methods=['POST'])
+def test():
+    return jsonify(make_package("message","Connected."))
 
 '''
 @app.route("/todo/api/v1.0/tasks", methods=["GET"])
