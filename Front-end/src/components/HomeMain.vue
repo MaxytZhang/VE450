@@ -38,6 +38,8 @@
 </template>
 
 <script>
+    import axios from 'axios';
+
     export default {
         name: "HomeMain",
         data(){
@@ -53,9 +55,10 @@
                 this.$router.push("/ongoing_meeting")
             },
             test() {
-                axios.get("http://127.0.0.1:5000").then(function(r) {
-                    alert(r.data)
-            }},
+                axios.get("http://127.0.0.1:5000/backend/api/v1.0/test").then(function(r) {
+                    console.log(r);
+                    alert(r.data.message)})}
+            ,
         }
     }
 </script>
