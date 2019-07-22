@@ -22,6 +22,7 @@
             </el-card>
             <!--<el-button type="primary" @click="this.to_new">Start A New Meeting</el-button>-->
             <el-button type="primary" @click="to_new">Start A New Meeting</el-button>
+            <el-button type="primary" @click="test">Test</el-button>
 
         </el-col>
         <el-col :span="12">
@@ -37,6 +38,8 @@
 </template>
 
 <script>
+    import axios from 'axios';
+
     export default {
         name: "HomeMain",
         data(){
@@ -51,6 +54,11 @@
             to_ongoing(){
                 this.$router.push("/ongoing_meeting")
             },
+            test() {
+                axios.get("http://127.0.0.1:5000/backend/api/v1.0/test").then(function(r) {
+                    console.log(r);
+                    alert(r.data.message)})}
+            ,
         }
     }
 </script>

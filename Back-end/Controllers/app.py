@@ -1,15 +1,16 @@
 #!flask/bin/python
 from flask import Flask, jsonify, abort, request
-import Meeting
+from flask_cors import *
+import Models.Meeting
 import json
 import requests
 import datetime
-import mysql.connector
-from mysql.connector import Error
+# import mysql.connector
+# from mysql.connector import Error
 
 
 app = Flask(__name__)
-
+CORS(app, supports_credentials = True)
 '''description of the tasks that need to be performed based on the front-end design 
 once a button is clicked. (can be used as documentation)'''
 tasks = [
@@ -136,8 +137,7 @@ def initiate_recommend():
     new_meeting.meeting_outline = meeting_info["meeting_outline"]
     new_meeting.initiator = meeting_info["initiator"]
     new_meeting.attendees = meeting_info["attendees"]
-    new_meeting.id = meeting_info["start_timestamp"] * length_of_employeeid 
-                    + meeting_info["initiator"] #meeting id = timestamp + initiator id
+    new_meeting.id = meeting_info["start_timestamp"] * length_of_employeeid + meeting_info["initiator"] #meeting id = timestamp + initiator id
     #recommend
     recommendation, flag = new_meeting.recommend()
     if recommendation == {}:
@@ -149,7 +149,7 @@ def initiate_recommend():
             {"message":"We have lowered the capacity to schedule the meeting",
             "recommendation" : recommendation}))
 
-@app.route('/backend/api/v1.0/test', methods=['POST'])
+@app.route('/backend/api/v1.0/test', methods=['GET','POST'])
 def test():
     return jsonify(make_package("message","Connected."))
 
@@ -165,5 +165,6 @@ def get_task(task_id):
         abort(404)
     return jsonify({"task": task[0]})
 '''
+
 if __name__ == "__main__":
     app.run(debug=True)
