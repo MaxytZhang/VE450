@@ -106,12 +106,6 @@ def convert_time(tstp):
 def generate_name(id):
     return ("Meeting_" + str(id))
 
-def make_package(type, info):
-    package = {
-        "type" : type,
-        type : info
-    }
-    return package
 
 '''initiate a new meeting'''
 @app.route('/backend/api/v1.0/meetings', methods=['GET','POST'])
@@ -142,17 +136,20 @@ def initiate_recommend():
     #recommend
     recommendation, flag = new_meeting.recommend()
     if recommendation == {}:
-        return jsonify(make_package("message","No recommendation available, please try some other time."))
+        recommendation["type"] = "message"
+        recommendation["message"] = "No recommendation available, please try some other time."
+        return jsonify(recommendation)
     elif flag == 0:
-        return jsonify(make_package("recommendation",recommendation))
+        recommendation["type"] = "recommendation"
+        return jsonify(recommendation)
     elif flag == 1:
-        return jsonify(make_package("message and recommendation",
-            {"message":"We have lowered the capacity to schedule the meeting",
-            "recommendation" : recommendation}))
+        recommendation["type"] = "message and recommendation"
+        recommendation["message"] = "We have lowered the capacity to schedule the meeting."
+        return jsonify(recommendation)
 
 @app.route('/backend/api/v1.0/test', methods=['GET','POST'])
 def test():
-    return jsonify(make_package("message","Connected."))
+    return jsonify({"type":"message","message":"Connected."})
 
 @app.route('/backend/api/v1.0/test_upload', methods=['GET','POST'])
 def test_upload():
