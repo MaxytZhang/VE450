@@ -150,7 +150,7 @@ def initiate_recommend():
         return jsonify(add_type("recommendation",recommendation))
     elif flag == 1:
         pkg = add_type("message and recommendation", recommendation)
-        pdk = add_message("We have lowered the capacity to schedule the meeting.", pkg)
+        pkg = add_message("We have lowered the capacity to schedule the meeting.", pkg)
         return jsonify(pkg)
 
 @app.route('/backend/api/v1.0/test', methods=['GET','POST'])
