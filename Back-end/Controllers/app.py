@@ -106,6 +106,13 @@ def convert_time(tstp):
 def generate_name(id):
     return ("Meeting_" + str(id))
 
+def add_message(msg, pkg):
+    pkg["message"] = msg
+    return pkg
+
+def add_type(tp, pkg):
+    pkg["type"] = tp
+    return pkg
 
 '''initiate a new meeting'''
 @app.route('/backend/api/v1.0/meetings', methods=['GET','POST'])
@@ -136,16 +143,15 @@ def initiate_recommend():
     #recommend
     recommendation, flag = new_meeting.recommend()
     if recommendation == {}:
-        recommendation["type"] = "message"
-        recommendation["message"] = "No recommendation available, please try some other time."
-        return jsonify(recommendation)
+        pkg = add_message("No recommendation available, please try some other time.",recommendation)
+        pkg = add_type("message",pkg)
+        return jsonify(pkg)
     elif flag == 0:
-        recommendation["type"] = "recommendation"
-        return jsonify(recommendation)
+        return jsonify(add_type("recommendation",recommendation))
     elif flag == 1:
-        recommendation["type"] = "message and recommendation"
-        recommendation["message"] = "We have lowered the capacity to schedule the meeting."
-        return jsonify(recommendation)
+        pkg = add_type("message and recommendation", recommendation)
+        pdk = add_message("We have lowered the capacity to schedule the meeting.", pkg)
+        return jsonify(pkg)
 
 @app.route('/backend/api/v1.0/test', methods=['GET','POST'])
 def test():
