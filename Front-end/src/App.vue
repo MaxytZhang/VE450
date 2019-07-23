@@ -1,22 +1,6 @@
 <template>
   <div id="app">
-    <!--<img src="./assets/logo.png">-->
-    <!--<div>-->
-      <!--<p>-->
-        <!--If Element is successfully added to this project, you'll see an-->
-        <!--<code v-text="'<el-button>'"></code>-->
-        <!--below-->
-      <!--</p>-->
-      <!--<el-button>el-button</el-button>-->
-    <!--</div>-->
-    <!--<HelloWorld msg="Welcome to Your Vue.js App"/>-->
-    <!--<ul>-->
-      <!--<li><router-link to="/">Hello页面</router-link></li>-->
-      <!--<li><router-link to="/word">word页面</router-link></li>-->
-    <!--</ul>-->
-    <!--<Login></Login>-->
     <router-view></router-view>
-    <!--<HomeLayout/>-->
   </div>
 </template>
 

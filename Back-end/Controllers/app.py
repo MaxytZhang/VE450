@@ -1,7 +1,7 @@
 #!flask/bin/python
 from flask import Flask, jsonify, abort, request
 from flask_cors import *
-import Models.Meeting
+from Models.Meeting import Meeting
 import json
 import requests
 import datetime
@@ -114,30 +114,31 @@ def make_package(type, info):
     return package
 
 '''initiate a new meeting'''
-@app.route('/backend/api/v1.0/meetings', methods=['POST'])
+@app.route('/backend/api/v1.0/meetings', methods=['GET','POST'])
 def initiate_recommend():
     #initiate a meeting
-    if not request.json:
-        abort(400)
-    package = json.loads(json_package)
+    print(request.form.to_dict())
+    # if not request.json:
+    #     abort(400)
+    package = request.form
     if not package["type"] == "meeting":
         return jsonify(make_package("error","error - sending wrong data"))
-    meeting_info = package["meeting"]
+    meeting_info = package
     new_meeting = Meeting()
     if meeting_info["meeting_name"] == "":
         meeting_info["meeting_name"] = generate_name(new_meeting.id)
     new_meeting.meeting_name = meeting_info["meeting_name"]
     new_meeting.meeting_topic = meeting_info["meeting_topic"]
-    new_meeting.date = convert_date(meeting_info["start_timestamp"])
-    new_meeting.start_time = convert_time(meeting_info["start_timestamp"])
-    new_meeting.end_time = convert_time(meeting_info["end_timestamp"])
+    new_meeting.date = convert_date(int(meeting_info["start_timestamp"])/1000)
+    new_meeting.start_time = convert_time(int(meeting_info["start_timestamp"])/1000)
+    new_meeting.end_time = convert_time(int(meeting_info["end_timestamp"])/1000)
     new_meeting.is_routine = meeting_info["is_routine"]
     new_meeting.requires = meeting_info["need_hw_support"]
     new_meeting.sites = meeting_info["sites"]
     new_meeting.meeting_outline = meeting_info["meeting_outline"]
     new_meeting.initiator = meeting_info["initiator"]
     new_meeting.attendees = meeting_info["attendees"]
-    new_meeting.id = meeting_info["start_timestamp"] * length_of_employeeid + meeting_info["initiator"] #meeting id = timestamp + initiator id
+    new_meeting.id = int(meeting_info["start_timestamp"])/1000 * length_of_employeeid + int(meeting_info["initiator"]) #meeting id = timestamp + initiator id
     #recommend
     recommendation, flag = new_meeting.recommend()
     if recommendation == {}:
@@ -152,6 +153,12 @@ def initiate_recommend():
 @app.route('/backend/api/v1.0/test', methods=['GET','POST'])
 def test():
     return jsonify(make_package("message","Connected."))
+
+@app.route('/backend/api/v1.0/test_upload', methods=['GET','POST'])
+def test_upload():
+    name = request.form['name']
+    age = request.form['age']
+    return jsonify(request.form)
 
 '''
 @app.route("/todo/api/v1.0/tasks", methods=["GET"])

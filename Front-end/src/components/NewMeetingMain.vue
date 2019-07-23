@@ -7,19 +7,21 @@
             <el-step title="Step 3"></el-step>
         </el-steps>
         <router-view></router-view>
-        <el-row type="flex">
-            <el-col :span="4">
-                <el-button style="margin-top: 12px; float: left" @click="pre" v-show="show_pre">Previous</el-button>
-            </el-col>
-            <el-col :span="16"></el-col>
-            <el-col :span="4">
-                <el-button type="primary" style="margin-top: 12px; float: right" @click="next" id="finish">{{finish}}</el-button>
-            </el-col>
-        </el-row>
+        <!--<el-row type="flex">-->
+            <!--<el-col :span="4">-->
+                <!--<el-button style="margin-top: 12px; float: left" @click="pre" v-show="show_pre">Previous</el-button>-->
+            <!--</el-col>-->
+            <!--<el-col :span="16"></el-col>-->
+            <!--<el-col :span="4">-->
+                <!--<el-button type="primary" style="margin-top: 12px; float: right" @click="next" id="finish">{{finish}}</el-button>-->
+            <!--</el-col>-->
+        <!--</el-row>-->
     </div>
 </template>
 
 <script>
+    import axios from 'axios';
+
     export default {
         name: "NewMeetingMain",
         data() {
@@ -53,6 +55,28 @@
                         duration: 3000
                     });
                     this.active--;
+                }
+
+                if (this.finish === 'Finish') {
+                    let formData = new FormData();
+                    formData.append('name', 'DJ');
+                    formData.append('age', '20');
+                    console.log(formData.get('name'));
+                    let config = {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    };
+
+                    axios.post("http://127.0.0.1:5000/backend/api/v1.0/test_upload", formData, config).then(function (res) {
+                        if (res.status === 200) {
+                            console.log(res)
+                        }
+                    });
+                }
+
+                if (this.finish === 'Next'){
+                    let formData = new FormData();
                 }
             },
             pre() {

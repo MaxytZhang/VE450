@@ -4,6 +4,15 @@
             <el-col :span="4"><span>Meeting Room Recommendation</span></el-col>
             <el-cascader-panel :options="options" :props="props"></el-cascader-panel>
         </el-row>
+        <el-row type="flex">
+            <el-col :span="4">
+                <el-button style="margin-top: 12px; float: left" @click="pre">Previous</el-button>
+            </el-col>
+            <el-col :span="16"></el-col>
+            <el-col :span="4">
+                <el-button type="primary" style="margin-top: 12px; float: right" @click="finish" id="finish">Finish</el-button>
+            </el-col>
+        </el-row>
     </div>
 </template>
 
@@ -62,6 +71,14 @@
             }
         },
         created() {
+        },
+        methods: {
+            finish() {
+                this.$router.push("/new_meeting/step4");
+            },
+            pre() {
+                this.$router.push("/new_meeting/step2");
+            }
         }
     }
 </script>
