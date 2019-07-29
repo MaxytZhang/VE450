@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import datetime
+import pymysql
 
 
 class MeetingRoom:
@@ -11,17 +12,41 @@ class MeetingRoom:
         self.remote = remote
         self.schedule = {}
         self.hardware = hardware
+        self.db = pymysql.connect(
+            host='127.0.0.1',  # host
+            port=3306,  # 默认端口，根据实际修改
+            user='root',  # 用户名
+            passwd='123123',  # 密码
+            # passwd='HHLK148',  # 密码
+            db='lbs_db',  # DB name
+            charset='utf8',
+        )
+        self.cursor = self.db.cursor()
+
+    def __del__(self):
+        self.db.close()
+        self.cursor.close()
 
     @property
     def is_empty(self):
         return self.occupancy
 
-    @staticmethod
-    def open_door(self, employee):
-        if employee.id in get_meeting_attendees(self.schedule[len(self.schedule) - 1][0]):
-            return True
-        else:
-            return False
+    def open_door(self, employee, time_slot):
+        try:
+            self.cursor.execute("select * from test_data where time = %d and bg_id = %d" % (time_slot, employee))
+            data = self.cursor.fetchone()
+            print(data)
+            if data[2] == 1:
+                return True
+            else:
+                return False
+        except:
+            print("Error!")
+
+        # if employee.id in get_meeting_attendees(self.schedule[len(self.schedule) - 1][0]):
+        #     return True
+        # else:
+        #     return False
 
     def get_schedule(self):
         return self.schedule
