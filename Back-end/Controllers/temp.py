@@ -4,7 +4,10 @@
 def submit_meeting():
     package = request.form
     if not package["type"] == "meeting":
-        return jsonify(make_package("error","error - sending wrong data"))
+        pkg = {}
+        pkg = add_type("error",pkg)
+        pkg = add_message("Wrong package sent.", pkg)
+        return jsonify(pkg)
     meeting_info = package
 
 
@@ -13,7 +16,10 @@ def submit_meeting():
 def employee_login():
     package = request.form
     if not package["type"] == "login":
-        return jsonify(make_package("error","error - sending wrong data"))
+        pkg = {}
+        pkg = add_type("error",pkg)
+        pkg = add_message("Wrong package sent.", pkg)
+        return jsonify(pkg)
     #check if the id and password match
 
     #if no, then return does not match

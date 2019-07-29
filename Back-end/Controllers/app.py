@@ -124,7 +124,10 @@ def initiate_recommend():
     #     abort(400)
     package = request.form
     if not package["type"] == "meeting":
-        return jsonify(make_package("error","error - sending wrong data"))
+        pkg = {}
+        pkg = add_type("error",pkg)
+        pkg = add_message("Wrong package sent.", pkg)
+        return jsonify(pkg)
     meeting_info = package
     new_meeting = Meeting()
     new_meeting.meeting_name = meeting_info["meeting_name"]
