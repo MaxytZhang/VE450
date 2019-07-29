@@ -8,6 +8,7 @@ import MeetingHistory from '../components/MeetingHistory'
 import NewMeetingStep1 from '../components/NewMeetingStep1'
 import NewMeetingStep2 from '../components/NewMeetingStep2'
 import NewMeetingStep3 from '../components/NewMeetingStep3'
+import NewMeetingStep4 from '../components/NewMeetingStep4'
 Vue.use(VueRouter);
 
 
@@ -45,6 +46,10 @@ export default new VueRouter({
                         {
                             path:'/new_meeting/step3',
                             component: NewMeetingStep3,
+                        },
+                        {
+                            path:'/new_meeting/step4',
+                            component: NewMeetingStep4,
                         },
                     ]
                 },
