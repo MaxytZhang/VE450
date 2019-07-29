@@ -1,7 +1,7 @@
 #!flask/bin/python
 
 @app.route('/backend/api/v1.0/meeting_submit', methods=['GET','POST'])
-def submit_meeting(cursor):
+def submit_meeting():
     package = request.form
     if not package["type"] == "meeting":
         pkg = {}
@@ -9,6 +9,9 @@ def submit_meeting(cursor):
         pkg = add_message("Wrong package sent.", pkg)
         return jsonify(pkg)
     meeting_info = package
+    
+    connection = mysql.connector.connect(host='localhost', database='mydb', user='root', password='*password*')
+    cursor = connection.cursor(prepared=True)
     Insertquery = "INSERT INTO `meeting` (`MeetingID`, `Name`, `MeetingRooms`, `MeetingTopic`, `Date`, `StartTime`, `EndTime`, `Attendee`, `NeedHarware`, `Status`, `IsRoutine`, `Requires`, `Sites`, `Outline`, `Initiator`, `Memo`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
     meetingid = package["id"]
     meetingname = generate_name(package["id"])
@@ -29,6 +32,8 @@ def submit_meeting(cursor):
     datatuple = (meetingid,meetingname,meetingrooms,meetingtopic,meetingdate,meetingst,meetinget,meetingattendees,meetinghw,meetingstatus,meetingroutine,meetingrequires,meetingsites,meetingoutline,meetinginitiator,meetingmemo)
     cursor.execute(Insertquery,datatuple)
     connection.commit()
+    cursor.close()
+    connection.close()
 
 
 
