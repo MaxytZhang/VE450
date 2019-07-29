@@ -22,6 +22,30 @@ class MeetingRoom:
             charset='utf8',
         )
         self.cursor = self.db.cursor()
+        
+        cursor.execute("Select SiteID from meetingroom where MeetingRoomID = %s",(id,))
+        siterecord = cursor.fetchone()
+        self.site = siterecord[0]
+        
+        cursor.execute("Select Capacity from meetingroom where MeetingRoomID = %s",(id,))
+        caprecord = cursor.fetchone()
+        self.capacity = caprecord[0]
+        
+        cursor.execute("Select Occupancy from meetingroom where MeetingRoomID = %s",(id,))
+        occurecord = cursor.fetchone()
+        self.occupancy = occurecord[0]
+
+        cursor.execute("Select Remote from meetingroom where MeetingRoomID = %s",(id,))
+        remoterecord = cursor.fetchone()
+        self.remote = remoterecord[0]
+        
+        cursor.execute("Select Schedule from meetingroom where MeetingRoomID = %s",(id,))
+        schrecord = cursor.fetchone()
+        self.schedule = schrecord[0]
+        
+        cursor.execute("Select Hardware from meetingroom where MeetingRoomID = %s",(id,))
+        hwrecord = cursor.fetchone()
+        self.hardware = hwrecord[0]
 
     def __del__(self):
         self.db.close()
