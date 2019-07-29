@@ -88,7 +88,6 @@ json_recommendation = """{
 
 json_package = """{
     "type" : "meeting" / "message" / "recommendation" / "error"
-    "meeting" : json_meeting
     ...
 }"""
 

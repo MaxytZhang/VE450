@@ -6,6 +6,9 @@ import json
 import requests
 import datetime
 
+app = Flask(__name__)
+CORS(app, supports_credentials = True)
+
 '''helper functions & variables'''
 length_of_employeeid = 8.;
 
@@ -67,3 +70,11 @@ def initiate_recommend():
         pkg = add_type("message and recommendation", recommendation)
         pkg = add_message("We have lowered the capacity to schedule the meeting.", pkg)
         return jsonify(pkg)
+
+@app.route('/backend/api/v1.0/meeting_submit', methods=['GET','POST'])
+def submit_meeting():
+    package = request.form
+    if not package["type"] == "meeting":
+        return jsonify(make_package("error","error - sending wrong data"))
+    meeting_info = package
+    
