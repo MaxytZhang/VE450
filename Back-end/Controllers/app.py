@@ -127,8 +127,6 @@ def initiate_recommend():
         return jsonify(make_package("error","error - sending wrong data"))
     meeting_info = package
     new_meeting = Meeting()
-    if meeting_info["meeting_name"] == "":
-        meeting_info["meeting_name"] = generate_name(new_meeting.id)
     new_meeting.meeting_name = meeting_info["meeting_name"]
     new_meeting.meeting_topic = meeting_info["meeting_topic"]
     new_meeting.date = convert_date(int(meeting_info["start_timestamp"])/1000)
@@ -141,6 +139,8 @@ def initiate_recommend():
     new_meeting.initiator = meeting_info["initiator"]
     new_meeting.attendees = meeting_info["attendees"]
     new_meeting.id = int(meeting_info["start_timestamp"])/1000 * length_of_employeeid + int(meeting_info["initiator"]) #meeting id = timestamp + initiator id
+    if meeting_info["meeting_name"] == "":
+        meeting_info["meeting_name"] = generate_name(new_meeting.id)
     #recommend
     recommendation, flag = new_meeting.recommend()
     if recommendation == {}:

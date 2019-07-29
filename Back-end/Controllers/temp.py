@@ -8,4 +8,6 @@ def submit_meeting():
     meeting_info = package
     
 
-    
+
+
+@app.route('/backend/api/v1.0/meeting_submit', methods=['GET','POST'])

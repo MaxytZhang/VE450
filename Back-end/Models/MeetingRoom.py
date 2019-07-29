@@ -3,10 +3,9 @@ import datetime
 
 
 class MeetingRoom:
-    def __init__(self, id, site, size, capacity, occupancy, remote, hardware):
+    def __init__(self, id, site, capacity, occupancy, remote, hardware):
         self.id = id
         self.site = site
-        self.size = size
         self.capacity = capacity
         self.occupancy = occupancy
         self.remote = remote
@@ -39,7 +38,7 @@ class MeetingRoom:
         self.schedule[meeting_id][1] = new_end_time
 
     def meet_requirements(self, number, requires, start_time, end_time, date):
-        if number <= self.size and requires < self.hardware:
+        if number <= self.capacity and requires < self.hardware:
             for time_id in self.schedule[date][start_time:end_time]:
                 if time_id != 0:
                     return False
