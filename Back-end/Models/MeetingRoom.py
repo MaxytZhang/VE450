@@ -33,9 +33,9 @@ class MeetingRoom:
         remoterecord = self.cursor.fetchone()
         self.remote = remoterecord[0]
 
-        # self.cursor.execute("SELECT Schedule FROM meetingroom WHERE MeetingRoomID = %s", room_id)
-        # schrecord = self.cursor.fetchone()
-        # self.schedule = schrecord[0]
+        self.cursor.execute("SELECT Schedule FROM meetingroom WHERE MeetingRoomID = %s", room_id)
+        schrecord = self.cursor.fetchone()
+        self.schedule = schrecord[0]
         self.schedule = {}
 
         self.cursor.execute("SELECT Hardware FROM meetingroom WHERE MeetingRoomID = %s", room_id)
@@ -55,6 +55,9 @@ class MeetingRoom:
             self.cursor.execute("SELECT * FROM test_data WHERE time = %d and bg_id = %d" % (time_slot, employee))
             data = self.cursor.fetchone()
             print(data)
+            self.cursor.execute(
+                "UPDATE test_data SET permission = 0 WHERE time = %d and bg_id = %d" % (time_slot, employee))
+            self.db.commit()
             if data[2] == 1:
                 return True
             else:

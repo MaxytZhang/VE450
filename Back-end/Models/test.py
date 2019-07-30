@@ -21,6 +21,21 @@ def generate_name(meetingId):
     return "Meeting_" + str(meetingId)
 
 
+def db_test():
+    db = pymysql.connect(
+        host='127.0.0.1',  # host
+        port=3306,  # 默认端口，根据实际修改
+        user='root',  # 用户名
+        passwd='HHLK1479',  # 密码
+        db='lbs_db',  # DB name
+        charset='utf8',
+    )
+    cursor = db.cursor()
+    cursor.execute("SELECT version()")
+    result = cursor.fetchone()
+    print(result[0])
+
+
 if __name__ == '__main__':
     json_meeting = """{
         "id" : 0,
@@ -275,5 +290,6 @@ if __name__ == '__main__':
                     print(meetingRoom[room_key]['name'])
             print('')
 
-    new_room = MeetingRoom.MeetingRoom(1, 1, 5, 1, 1, 1)
+    # db_test()
+    new_room = MeetingRoom.MeetingRoom(1)
     print(new_room.open_door(2, 20))
