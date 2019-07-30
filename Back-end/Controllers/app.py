@@ -5,13 +5,12 @@ from Models.Meeting import Meeting
 import json
 import requests
 import datetime
-import initiate_meeting
 # import mysql.connector
 # from mysql.connector import Error
 
 
 app = Flask(__name__)
-CORS(app, supports_credentials = True)
+# CORS(app, supports_credentials = True)
 '''description of the tasks that need to be performed based on the front-end design 
 once a button is clicked. (can be used as documentation)'''
 tasks = [
@@ -159,6 +158,11 @@ def initiate_recommend():
 
 @app.route('/backend/api/v1.0/test', methods=['GET','POST'])
 def test():
+    print(request.json)
+    print(request.form)
+    print(request.data)
+    print(request.get_json())
+    print(request.args)
     return jsonify({"type":"message","message":"Connected."})
 
 @app.route('/backend/api/v1.0/test_upload', methods=['GET','POST'])
