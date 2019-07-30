@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 import Meeting
 import json
+import MeetingRoom
+import pymysql
 import datetime
 
 
@@ -17,6 +19,7 @@ def convert_time(tstp):
 
 def generate_name(meetingId):
     return "Meeting_" + str(meetingId)
+
 
 if __name__ == '__main__':
     json_meeting = """{
@@ -272,3 +275,5 @@ if __name__ == '__main__':
                     print(meetingRoom[room_key]['name'])
             print('')
 
+    new_room = MeetingRoom.MeetingRoom(1, 1, 5, 1, 1, 1)
+    print(new_room.open_door(2, 20))
