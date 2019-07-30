@@ -43,7 +43,7 @@
 
 <script>
     import axios from 'axios';
-
+    import qs from 'qs'
     export default {
         name: "NewMeetingStep2",
         data() {
@@ -86,17 +86,35 @@
                 total_form_data.append('initiator', '1239084');
                 total_form_data.append("meeting_outline", this.outlines);
                 let config = {
+                    // headers: {
+                    //     'Content-Type': 'multipart/form-data'
+                    // }
                     headers: {
-                        'Content-Type': 'multipart/form-data'
+                        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
                     }
                 };
-                console.log(this.outlines);
-                console.log(total_form_data.get('meeting_outline'));
-                axios.post("http://127.0.0.1:5000/backend/api/v1.0/meetings", total_form_data, config).then(function (res) {
+
+                let test = {
+                    'site': JSON.stringify(this.$store.state.Step1.sites),
+                    'attendees': JSON.stringify(this.$store.state.Step1),
+                };
+                var test2 = {
+                    'site': this.$store.state.Step1.sites,
+                    'attendees': this.$store.state.Step1,
+                };
+                axios.post("/v1.0/test", test2, config).then(function (res) {
                     if (res.status === 200) {
                         console.log(res)
                     }
                 });
+                console.log(test);
+                console.log(this.outlines);
+                console.log(total_form_data.get('meeting_outline'));
+                // axios.post("/v1.0/meetings", qs.stringify(total_form_data), config).then(function (res) {
+                //     if (res.status === 200) {
+                //         console.log(res)
+                //     }
+                // });
                 this.$router.push("/new_meeting/step3");
             },
             pre(){

@@ -55,9 +55,9 @@
                 this.$router.push("/ongoing_meeting")
             },
             test() {
-                axios.get("http://127.0.0.1:5000/backend/api/v1.0/test").then(function(r) {
-                    console.log(r);
-                    alert(r.data.message)})}
+                this.$http.get("/v1.0/test").then(function(r) {
+                        console.log(r);
+                        alert(r.data.message)})}
             ,
         }
     }
