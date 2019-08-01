@@ -23,12 +23,12 @@ def generate_name(meetingId):
 
 def db_test():
     db = pymysql.connect(
-        host='127.0.0.1',  # host
+        host='gdm64397110.my3w.com',  # host
         port=3306,  # 默认端口，根据实际修改
-        user='root',  # 用户名
-        passwd='HHLK1479',  # 密码
-        db='lbs_db',  # DB name
-        charset='utf8',
+        user='gdm64397110',  # 用户名
+        passwd='VE450Team7',  # 密码
+        db='gdm64397110_db',  # DB name
+        charset='utf8mb4'
     )
     cursor = db.cursor()
     cursor.execute("SELECT version()")

@@ -6,12 +6,12 @@ import pymysql
 class MeetingRoom:
     def __init__(self, room_id):
         self.db = pymysql.connect(
-            host='127.0.0.1',  # host
+            host='gdm64397110.my3w.com',  # host
             port=3306,  # 默认端口，根据实际修改
-            user='root',  # 用户名
-            passwd='123123',  # 密码
-            db='lbs_db',  # DB name
-            charset='utf8',
+            user='gdm64397110',  # 用户名
+            passwd='VE450Team7',  # 密码
+            db='gdm64397110_db',  # DB name
+            charset='utf8mb4'
         )
         self.cursor = self.db.cursor()
 
@@ -33,14 +33,14 @@ class MeetingRoom:
         remoterecord = self.cursor.fetchone()
         self.remote = remoterecord[0]
 
-        self.cursor.execute("SELECT Schedule FROM meetingroom WHERE MeetingRoomID = %s", room_id)
-        schrecord = self.cursor.fetchone()
-        self.schedule = schrecord[0]
-        self.schedule = {}
-
         self.cursor.execute("SELECT Hardware FROM meetingroom WHERE MeetingRoomID = %s", room_id)
         hwrecord = self.cursor.fetchone()
         self.hardware = hwrecord[0]
+
+        # self.cursor.execute("SELECT Schedule FROM meetingroom WHERE MeetingRoomID = %s", room_id)
+        # schrecord = self.cursor.fetchone()
+        # self.schedule = schrecord[0]
+        self.schedule = {}
 
     def __del__(self):
         self.db.close()
@@ -56,7 +56,7 @@ class MeetingRoom:
             data = self.cursor.fetchone()
             print(data)
             self.cursor.execute(
-                "UPDATE test_data SET permission = 0 WHERE time = %d and bg_id = %d" % (time_slot, employee))
+                "UPDATE test_data SET permission = 4 WHERE time = %d and bg_id = %d" % (time_slot, employee))
             self.db.commit()
             if data[2] == 1:
                 return True
