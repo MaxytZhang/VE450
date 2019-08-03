@@ -96,7 +96,7 @@ length_of_employeeid = 8.;
 
 
 def generate_name(id):
-    return "Meeting_" + str(id)
+    return "meeting_" + str(id)
 
 
 def add_message(msg, pkg):
@@ -110,9 +110,9 @@ def add_type(tp, pkg):
 
 
 '''initiate a new meeting'''
-@app.route('/backend/api/v1.0/meetings', methods=['GET','POST'])
+@app.route('/backend/api/v1.0/meetings', methods=['GET', 'POST'])
 def initiate_recommend():
-    #initiate a meeting
+    # initiate a meeting
     print(request.form.to_dict())
     # if not request.json:
     #     abort(400)
@@ -125,22 +125,22 @@ def initiate_recommend():
     meeting_info = package
     new_meeting = Meeting(meeting_info)
     if meeting_info["meeting_name"] == "":
-        meeting_info["meeting_name"] = generate_name(new_meeting.id)
+        meeting_info["meeting_name"] = generate_name(new_meeting.meeting_id)
     # recommend
     recommendation, flag = new_meeting.recommend()
     if recommendation == {}:
-        pkg = add_message("No recommendation available, please try some other time.",recommendation)
+        pkg = add_message("No recommendation available, please try some other time.", recommendation)
         pkg = add_type("message",pkg)
         return jsonify(pkg)
     elif flag == 0:
-        return jsonify(add_type("recommendation",recommendation))
+        return jsonify(add_type("recommendation", recommendation))
     elif flag == 1:
         pkg = add_type("message and recommendation", recommendation)
         pkg = add_message("We have lowered the capacity to schedule the meeting.", pkg)
         return jsonify(pkg)
 
 
-@app.route('/backend/api/v1.0/test', methods=['GET','POST'])
+@app.route('/backend/api/v1.0/test', methods=['GET', 'POST'])
 def test():
     print(request.json)
     print(request.form)

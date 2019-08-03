@@ -83,20 +83,22 @@ class Meeting:
         self.db.commit()
 
     @staticmethod
-    def release(self, button_pressed, room_is_empty):
+    def release(self, button_pressed, room_is_empty, current_time):
         if button_pressed:
             for room_id in self.meeting_room_id:
-                my_meeting_room = meeting_room_list[self.meeting_room_id[room_id]]
-                my_meeting_room.occupancy = False
+                self.cursor.execute("UPDATE meetingroom SET Occupancy = 0 WHERE MeetingRoomID = %s", room_id)
+                self.db.commit()
                 if self.end_time != current_time:
-                    my_meeting_room.change_schedule(self.meeting_id, current_time)
+                    room = MeetingRoom.MeetingRoom(room_id)
+                    room.change_schedule(self.meeting_id, current_time)
         else:
-            for empty_id in range(len(room_is_empty)):
+            for empty_id in room_is_empty:
                 if empty_id:
-                    my_meeting_room = meeting_room_list[self.meeting_room_id[empty_id]]
-                    my_meeting_room.occupancy = False
+                    self.cursor.execute("UPDATE meetingroom SET Occupancy = 0 WHERE MeetingRoomID = %s", empty_id)
+                    self.db.commit()
                     if self.end_time != current_time:
-                        my_meeting_room.change_schedule(self.meeting_id, current_time)
+                        room = MeetingRoom.MeetingRoom(empty_id)
+                        room.change_schedule(self.meeting_id, current_time)
         self.end_time = current_time
 
     def recommend(self):
