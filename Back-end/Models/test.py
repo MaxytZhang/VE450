@@ -37,21 +37,22 @@ def db_test():
 
 
 if __name__ == '__main__':
-    json_meeting = """{
+    json_meeting = json.loads("""{
         "id" : 0,
         "meeting_name" : "meeting_1",
         "meeting_topic" : "design review 3 is killing me",
-        "start_timestamp" : 1232440958,
-        "end_timestamp" : 1232440960,
-        "attendees" : {id1:{"status":-1,"feedback":"coming","role":"staff","site":11},id2:{"status":-1,"feedback":"coming","role":"staff","site":1}},
+        "meeting_rooms" : [1,2,3],
+        "start_timestamp" : 1532440958,
+        "end_timestamp" : 1532440960,
+        "attendees" : {"id1":{"status":-1,"feedback":"coming","role":"staff","site":11},"id2":{"status":-1,"feedback":"coming","role":"staff","site":1}},
         "status" : -1,
-        "is routine" : 0,
-        "need hw support" : 1,
-        "sites" : [id1, id2, ...],
-        "meeting memo" : {id1 : "memo1", id2 : "memo2"},
-        "meeting outline" : ["outline1", "outline2"],
-        "initiator" : 1239084(id)
-    }"""
+        "is_routine" : 0,
+        "need_hw_support" : 1,
+        "sites" : [1, 2],
+        "meeting_memo" : {"id1" : "memo1", "id2" : "memo2"},
+        "meeting_outline" : ["outline1", "outline2"],
+        "initiator" : 15
+    }""")
     meetingRoom = {
         "site_1_1": {
             "id": 1,
@@ -250,46 +251,47 @@ if __name__ == '__main__':
             "roomNumber": 2
         }
     ]
-    currentMeeting = Meeting.Meeting()
-    currentMeeting.id = 1
-    currentMeeting.meeting_name = generate_name(1)
-    currentMeeting.meeting_topic = 'test meeting'
-    currentMeeting.meeting_room_id = {}
-    currentMeeting.date = convert_date(1564469999)
-    currentMeeting.start_time = convert_time(1564469999)
-    currentMeeting.end_time = convert_time(1564498799)
-    currentMeeting.attendees = attendeeList
-    currentMeeting.status = -1  # before, during, after
-    currentMeeting.is_routine = False
-    currentMeeting.requires = False
-    currentMeeting.sites = [1, 2, 3]
-    currentMeeting.outline = []  # list of strings
-    currentMeeting.initiator = 1
-    currentMeeting.memo = {}
+    currentMeeting = Meeting.Meeting(json_meeting)
+    currentMeeting.init_db()
+    # currentMeeting.id = 1
+    # currentMeeting.meeting_name = generate_name(1)
+    # currentMeeting.meeting_topic = 'test meeting'
+    # currentMeeting.meeting_room_id = {}
+    # currentMeeting.date = convert_date(1564469999)
+    # currentMeeting.start_time = convert_time(1564469999)
+    # currentMeeting.end_time = convert_time(1564498799)
+    # currentMeeting.attendees = attendeeList
+    # currentMeeting.status = -1  # before, during, after
+    # currentMeeting.is_routine = False
+    # currentMeeting.requires = False
+    # currentMeeting.sites = [1, 2, 3]
+    # currentMeeting.outline = []  # list of strings
+    # currentMeeting.initiator = 1
+    # currentMeeting.memo = {}
     # print(currentMeeting.id)
     # print(currentMeeting.attendees)
 
-    recommendation, flag = currentMeeting.recommend(meetingRoom, siteList)
-    if recommendation == {}:
-        print("No recommendation available, please try some other time.")
-    elif flag == 0:
-        print("The recommended rooms are:")
-        for site_id in recommendation:
-            print(siteList[site_id-1]['name']+':')
-            for room_key in siteList[site_id-1]['meetingRoom']:
-                if meetingRoom[room_key]['id'] in recommendation[site_id]:
-                    print(meetingRoom[room_key]['name'])
-            print('')
-    elif flag == 1:
-        print("We have lowered the capacity to schedule the meeting.\n")
-        print("The recommended rooms are:")
-        for site_id in recommendation:
-            print(siteList[site_id-1]['name']+':')
-            for room_key in siteList[site_id-1]['meetingRoom']:
-                if meetingRoom[room_key]['id'] in recommendation[site_id]:
-                    print(meetingRoom[room_key]['name'])
-            print('')
+    # recommendation, flag = currentMeeting.recommend(meetingRoom, siteList)
+    # if recommendation == {}:
+    #     print("No recommendation available, please try some other time.")
+    # elif flag == 0:
+    #     print("The recommended rooms are:")
+    #     for site_id in recommendation:
+    #         print(siteList[site_id-1]['name']+':')
+    #         for room_key in siteList[site_id-1]['meetingRoom']:
+    #             if meetingRoom[room_key]['id'] in recommendation[site_id]:
+    #                 print(meetingRoom[room_key]['name'])
+    #         print('')
+    # elif flag == 1:
+    #     print("We have lowered the capacity to schedule the meeting.\n")
+    #     print("The recommended rooms are:")
+    #     for site_id in recommendation:
+    #         print(siteList[site_id-1]['name']+':')
+    #         for room_key in siteList[site_id-1]['meetingRoom']:
+    #             if meetingRoom[room_key]['id'] in recommendation[site_id]:
+    #                 print(meetingRoom[room_key]['name'])
+    #         print('')
 
     # db_test()
-    new_room = MeetingRoom.MeetingRoom(1)
-    print(new_room.open_door(2, 20))
+    # new_room = MeetingRoom.MeetingRoom(2)
+    # print(new_room.set_schedule('meeting_12_1576', 4, 8))

@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import datetime
+import json
 import pymysql
 
 
@@ -17,30 +18,14 @@ class MeetingRoom:
 
         self.room_id = room_id
 
-        self.cursor.execute("SELECT SiteID FROM meetingroom WHERE MeetingRoomID = %s", room_id)
-        siterecord = self.cursor.fetchone()
-        self.site = siterecord[0]
-
-        self.cursor.execute("SELECT Capacity FROM meetingroom WHERE MeetingRoomID = %s", room_id)
-        caprecord = self.cursor.fetchone()
-        self.capacity = caprecord[0]
-
-        self.cursor.execute("SELECT Occupancy FROM meetingroom WHERE MeetingRoomID = %s", room_id)
-        occurecord = self.cursor.fetchone()
-        self.occupancy = occurecord[0]
-
-        self.cursor.execute("SELECT Remote FROM meetingroom WHERE MeetingRoomID = %s", room_id)
-        remoterecord = self.cursor.fetchone()
-        self.remote = remoterecord[0]
-
-        self.cursor.execute("SELECT Hardware FROM meetingroom WHERE MeetingRoomID = %s", room_id)
-        hwrecord = self.cursor.fetchone()
-        self.hardware = hwrecord[0]
-
-        # self.cursor.execute("SELECT Schedule FROM meetingroom WHERE MeetingRoomID = %s", room_id)
-        # schrecord = self.cursor.fetchone()
-        # self.schedule = schrecord[0]
-        self.schedule = {}
+        self.cursor.execute("SELECT * FROM meetingroom WHERE MeetingRoomID = %s", room_id)
+        result = self.cursor.fetchone()
+        self.capacity = result[1]
+        self.occupancy = result[2]
+        self.remote = result[3]
+        self.schedule = json.loads(result[4])
+        self.site = result[5]
+        self.hardware = result[6]
 
     def __del__(self):
         self.db.close()
@@ -49,6 +34,14 @@ class MeetingRoom:
     @property
     def is_empty(self):
         return self.occupancy
+
+    def update_schedule(self):
+        sql_update = "UPDATE meetingroom SET Schedule = \'{json_sch}\' WHERE MeetingRoomID = %s" % self.room_id
+        sql_update = sql_update.format(
+            json_sch=json.dumps(self.schedule)
+        )
+        self.cursor.execute(sql_update)
+        self.db.commit()
 
     def open_door(self, employee, time_slot):
         try:
@@ -76,12 +69,13 @@ class MeetingRoom:
     def set_schedule(self, meeting_id, start_time, end_time):
         self.cursor.execute("SELECT Date FROM meeting WHERE MeetingID = %s", meeting_id)
         meeting_record = self.cursor.fetchone()
-        meeting_date = meeting_record[4]
+        meeting_date = str(meeting_record[4])
 
         if meeting_date not in self.schedule:
             self.schedule[meeting_date] = [''] * 96
         for interval in range(start_time, end_time):
             self.schedule[meeting_date][interval] = meeting_id
+        self.update_schedule()
         return self.schedule
 
     def cancel_schedule(self, meeting_id):
@@ -92,6 +86,7 @@ class MeetingRoom:
         for slot_id in range(96):
             if self.schedule[meeting_date][slot_id] == meeting_id:
                 self.schedule[meeting_date][slot_id] = ''
+        self.update_schedule()
 
     def change_schedule(self, meeting_id, new_end_time):
         self.cursor.execute("SELECT Date FROM meeting WHERE MeetingID = %s", meeting_id)
@@ -106,6 +101,7 @@ class MeetingRoom:
             else:
                 self.schedule[meeting_date][slot_id] = meeting_id
                 slot_id -= 1
+        self.update_schedule()
 
     def meet_requirements(self, number, requires, start_time, end_time, meeting_date):
         if number <= self.capacity and requires < self.hardware:
