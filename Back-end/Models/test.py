@@ -41,17 +41,18 @@ if __name__ == '__main__':
         "id" : 0,
         "meeting_name" : "meeting_1",
         "meeting_topic" : "design review 3 is killing me",
-        "meeting_rooms" : [1,2,3],
+        "meeting_rooms" : ["room1","room2","room3"],
         "start_timestamp" : 1532440958,
         "end_timestamp" : 1532440960,
-        "attendees" : {"id1":{"status":-1,"feedback":"coming","role":"staff","site":11},"id2":{"status":-1,"feedback":"coming","role":"staff","site":1}},
+        "date": "2016-11-24",
+        "attendees" : {"id1":{"status":-1,"feedback":"coming","role":"staff","site":"site_1"},"id2":{"status":-1,"feedback":"coming","role":"staff","site":"site_2"}},
         "status" : -1,
         "is_routine" : 0,
         "need_hw_support" : 1,
-        "sites" : [1, 2],
+        "sites" : ["site_1", "site_2"],
         "meeting_memo" : {"id1" : "memo1", "id2" : "memo2"},
         "meeting_outline" : ["outline1", "outline2"],
-        "initiator" : 15
+        "initiator" : 17
     }""")
     meetingRoom = {
         "site_1_1": {
@@ -219,8 +220,8 @@ if __name__ == '__main__':
             "site": 3
         },
     }
-    siteList = [
-        {
+    siteList = {
+        "site_1": {
             "name": "SongJiang",
             "meetingRoom": [
                 "site_1_1",
@@ -231,7 +232,7 @@ if __name__ == '__main__':
             ],
             "roomNumber": 5
         },
-        {
+        "site_2": {
             "name": "LinGang",
             "meetingRoom": [
                 "site_2_1",
@@ -242,7 +243,7 @@ if __name__ == '__main__':
             ],
             "roomNumber": 5
         },
-        {
+        "site_3": {
             "name": "JI",
             "meetingRoom": [
                 "site_3_1",
@@ -250,9 +251,9 @@ if __name__ == '__main__':
             ],
             "roomNumber": 2
         }
-    ]
+    }
     currentMeeting = Meeting.Meeting(json_meeting)
-    currentMeeting.init_db()
+    # currentMeeting.init_db()
     # currentMeeting.id = 1
     # currentMeeting.meeting_name = generate_name(1)
     # currentMeeting.meeting_topic = 'test meeting'
@@ -271,27 +272,27 @@ if __name__ == '__main__':
     # print(currentMeeting.id)
     # print(currentMeeting.attendees)
 
-    # recommendation, flag = currentMeeting.recommend(meetingRoom, siteList)
-    # if recommendation == {}:
-    #     print("No recommendation available, please try some other time.")
-    # elif flag == 0:
-    #     print("The recommended rooms are:")
-    #     for site_id in recommendation:
-    #         print(siteList[site_id-1]['name']+':')
-    #         for room_key in siteList[site_id-1]['meetingRoom']:
-    #             if meetingRoom[room_key]['id'] in recommendation[site_id]:
-    #                 print(meetingRoom[room_key]['name'])
-    #         print('')
-    # elif flag == 1:
-    #     print("We have lowered the capacity to schedule the meeting.\n")
-    #     print("The recommended rooms are:")
-    #     for site_id in recommendation:
-    #         print(siteList[site_id-1]['name']+':')
-    #         for room_key in siteList[site_id-1]['meetingRoom']:
-    #             if meetingRoom[room_key]['id'] in recommendation[site_id]:
-    #                 print(meetingRoom[room_key]['name'])
-    #         print('')
+    recommendation, flag = currentMeeting.recommend()
+    if recommendation == {}:
+        print("No recommendation available, please try some other time.")
+    elif flag == 0:
+        print("The recommended rooms are:")
+        for site_id in recommendation:
+            print(siteList[site_id-1]['name']+':')
+            for room_key in siteList[site_id-1]['meetingRoom']:
+                if meetingRoom[room_key]['id'] in recommendation[site_id]:
+                    print(meetingRoom[room_key]['name'])
+            print('')
+    elif flag == 1:
+        print("We have lowered the capacity to schedule the meeting.\n")
+        print("The recommended rooms are:")
+        for site_id in recommendation:
+            print(siteList[site_id]['name']+':')
+            for room_key in siteList[site_id]['meetingRoom']:
+                if meetingRoom[room_key]['id'] in recommendation[site_id]:
+                    print(meetingRoom[room_key]['name'])
+            print('')
 
     # db_test()
-    # new_room = MeetingRoom.MeetingRoom(2)
-    # print(new_room.set_schedule('meeting_12_1576', 4, 8))
+    # new_room = MeetingRoom.MeetingRoom("room_1")
+    # print(new_room.set_schedule('meeting_158_1532440958', 3, 8))

@@ -2,6 +2,7 @@
 import datetime
 import json
 import pymysql
+import MeetingRoom
 
 
 def convert_date(tstp):
@@ -13,6 +14,16 @@ def convert_time(tstp):
     time = datetime.datetime.fromtimestamp(tstp)
     # convert the time slots to 0-95
     return time.hour * 4 + time.minute / 15
+
+
+def meet_requirements(room_id, number, requires, start_time, end_time, meeting_date):
+    room = MeetingRoom.MeetingRoom(room_id)
+    if number <= room.capacity and requires <= room.hardware and meeting_date in room.schedule:
+        for slot_id in room.schedule[meeting_date][start_time:end_time]:
+            if slot_id != '':
+                return False, room.capacity
+        return True, room.capacity
+    return False, room.capacity
 
 
 class Meeting:
@@ -62,14 +73,12 @@ class Meeting:
         sql = "INSERT INTO meeting values(\'%s\', \'%s\', \'%s\', \'{room_list}\', \'{meeting_date}\', %d, %d, \'{attendees}\', %d, %d, %d, \'{site_json}\', \'{{}}\', %d, \'{{}}\')" % (
             self.meeting_id, self.meeting_name, self.meeting_topic, self.start_time, self.end_time, self.status,
             self.is_routine, self.requires, self.initiator)
-        print(sql)
         sql = sql.format(
             attendees=json.dumps(self.attendees),
-            room_list='[' + ', '.join([str(x) for x in self.meeting_room_id]) + ']',
+            room_list=json.dumps(self.meeting_room_id),
             meeting_date=str(self.date),
-            site_json='[' + ', '.join([str(x) for x in self.sites]) + ']'
+            site_json=json.dumps(self.sites)
         )
-        print(sql)
         self.cursor.execute(sql)
         self.db.commit()
 
@@ -90,9 +99,8 @@ class Meeting:
                         my_meeting_room.change_schedule(self.meeting_id, current_time)
         self.end_time = current_time
 
-    def recommend(self, meeting_room_list, site_list):
+    def recommend(self):
         site_attendees = {}
-
         # Count the number of people in each site
         for member in self.attendees:
             if self.attendees[member]['site'] in site_attendees:
@@ -100,20 +108,18 @@ class Meeting:
             else:
                 site_attendees[self.attendees[member]['site']] = 1
         for site_id in site_attendees:
-            print(
-                '' + str(site_attendees[site_id]) + ' people in site ' + str(site_id) + ' need to attend the meeting.')
+            print(str(site_attendees[site_id]) + ' people in site ' + site_id + ' need to attend the meeting.')
 
         site_recommend_list = {}
         limitation_flag = False  # see if the solution can be find
         for site_id in self.sites:
             site_recommend_list[site_id] = []
-            for room_id in site_list[site_id - 1]['meetingRoom']:
-                # if room_id.meet_requirements(len(site_attendees[site_id]), self.requires, self.start_time,
-                #                              self.end_time):
-                #     site_recommend_list[site_id].append(room_id.id)
-                if meeting_room_list[room_id]['hardware'] == 1 and meeting_room_list[room_id]['capacity'] >= \
-                        site_attendees[site_id]:
-                    site_recommend_list[site_id].append(meeting_room_list[room_id]['id'])
+            self.cursor.execute("SELECT MeetingRoom FROM site WHERE SiteID = %s", site_id)
+            result = self.cursor.fetchone()
+            site_list = json.loads(result[0])
+            for room_id in site_list:
+                if meet_requirements(room_id, self.requires, site_attendees[site_id], self.start_time, self.end_time, self.date)[0]:
+                    site_recommend_list[site_id].append(room_id)
             if not site_recommend_list[site_id]:
                 print('\nThere\'s no meeting room available for site ' + str(site_id))
                 limitation_flag = True
@@ -123,17 +129,18 @@ class Meeting:
             for site_id in self.sites:
                 if site_recommend_list[site_id] == []:
                     room_flag = ''
-                    for room_id in site_list[site_id - 1]['meetingRoom']:
-                        # if room_id.meet_requirements(0, self.requires, self.start_time,
-                        #                              self.end_time):
-                        #     site_recommend_list[site_id].append(room_id.id)
-                        if meeting_room_list[room_id]['hardware'] == 1 and meeting_room_list[room_id]['capacity'] >= 0:
+                    flag_cap = -1
+                    self.cursor.execute("SELECT MeetingRoom FROM site WHERE SiteID = %s", site_id)
+                    result = self.cursor.fetchone()
+                    site_list = json.loads(result[0])
+                    for room_id in site_list:
+                        require_flag, room_cap = meet_requirements(room_id, self.requires, site_attendees[site_id], self.start_time, self.end_time, self.date)
+                        if require_flag:
                             if room_flag == '':
-                                room_flag = room_id
-                            else:
-                                if meeting_room_list[room_id]['capacity'] > meeting_room_list[room_flag]['capacity']:
-                                    room_flag = room_id
-                    site_recommend_list[site_id].append(meeting_room_list[room_flag]['id'])
+                                room_flag, flag_cap = room_id, room_cap
+                            elif room_cap > flag_cap:
+                                room_flag, flag_cap = room_id, room_cap
+                    site_recommend_list[site_id].append(room_id)
                     if not site_recommend_list[site_id]:
                         return {}, True
         return site_recommend_list, limitation_flag
@@ -152,10 +159,11 @@ class Meeting:
             self.recommend()
 
     def extend(self, extend_time):
-        for room_id in meeting_room_id:
-            if not meeting_room_list[room_id].meet_requirements(0, False, self.end_time, self.end_time + extend_time):
+        for room_id in self.meeting_room_id:
+            if not meet_requirements(room_id, False, 0, self.end_time, self.end_time + extend_time)[0]:
                 return False
-        for room_id in meeting_room_id:
-            meeting_room_list[room_id].set_schedule(self.meeting_id, self.end_time, self.end_time + extend_time)
+        for room_id in self.meeting_room_id:
+            room = MeetingRoom.MeetingRoom(room_id)
+            room.set_schedule(self.meeting_id, self.end_time, self.end_time + extend_time)
         self.end_time = self.end_time + extend_time
         return True

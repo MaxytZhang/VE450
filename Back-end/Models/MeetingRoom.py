@@ -36,7 +36,7 @@ class MeetingRoom:
         return self.occupancy
 
     def update_schedule(self):
-        sql_update = "UPDATE meetingroom SET Schedule = \'{json_sch}\' WHERE MeetingRoomID = %s" % self.room_id
+        sql_update = "UPDATE meetingroom SET Schedule = \'{json_sch}\' WHERE MeetingRoomID = \"%s\"" % self.room_id
         sql_update = sql_update.format(
             json_sch=json.dumps(self.schedule)
         )
@@ -69,7 +69,7 @@ class MeetingRoom:
     def set_schedule(self, meeting_id, start_time, end_time):
         self.cursor.execute("SELECT Date FROM meeting WHERE MeetingID = %s", meeting_id)
         meeting_record = self.cursor.fetchone()
-        meeting_date = str(meeting_record[4])
+        meeting_date = str(meeting_record[0])
 
         if meeting_date not in self.schedule:
             self.schedule[meeting_date] = [''] * 96
@@ -102,11 +102,3 @@ class MeetingRoom:
                 self.schedule[meeting_date][slot_id] = meeting_id
                 slot_id -= 1
         self.update_schedule()
-
-    def meet_requirements(self, number, requires, start_time, end_time, meeting_date):
-        if number <= self.capacity and requires < self.hardware:
-            for slot_id in self.schedule[meeting_date][start_time:end_time]:
-                if slot_id != '':
-                    return False
-            return True
-        return False
