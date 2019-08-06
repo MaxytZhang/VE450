@@ -12,8 +12,8 @@
         <el-row id="notice">
         <div class="block">
             <el-collapse class="infinite-list">
-                <el-collapse-item v-for="i in count" :title="'Notice-' + i" :name="i">
-                    <div>{{i}}</div>
+                <el-collapse-item v-for="(item, i) in notices" :title="'Notice-' + i" :name="i">
+                    <div>{{item}}</div>
                 </el-collapse-item>
             </el-collapse>
             <el-button type="primary" plain="" @click="load">More</el-button>
@@ -27,16 +27,19 @@
 <script>
     export default {
         name: "HomeSide",
+        created() {
+            this.get_notice();
+        },
         beforeMount () {
-            console.log(this.$store.state.UserInfo);
-            console.log(this.$cookieStore.getCookie('name'))
+            this.get_notice();
         },
         data () {
             return {
                 user_info: JSON.parse(this.$store.state.UserInfo),
                 user_name: this.$cookieStore.getCookie('name'),
                 isHidden: true,
-                count: 3,
+                count: 0,
+                notices: [],
             }
         },
         methods: {
@@ -56,24 +59,56 @@
                     console.log(r);
                     alert(r.data.message)})
             },
-            check_notice() {
+            check_open() {
+                let _this = this;
                 this.myInterval = window.setInterval(() => {
-                    setTimeout(() => {
-                        this.$http.get("/v1.0/check_notice", this.user_name).then(function(r) {
-                            console.log(r);
-                            alert(r.data.message)}) //调用接口的方法
+                    setTimeout(() => { //调用接口的方法
+                        this.$http.post("/v1.0/check_open", this.user_info.EmployeeID).then(function(res) {
+                            if ((res.status === 200) && (res.data === true)) {
+                                console.log(res);
+                                _this.$notify({
+                                    type: 'success',
+                                    message: _this.user_name + ': Meeting Room has been opened for you',
+                                    duration: 3000
+                                });
+                            }})
                     }, 1)
                 }, 5000);
             },
-            check_open() {
-
+            check_notice() {
+                let _this = this;
+                this.myInterval = window.setInterval(() => {
+                    setTimeout(() => { //调用接口的方法
+                        this.$http.post("/v1.0/check_notice", this.user_info.EmployeeID).then(function(res) {
+                            if ((res.status === 200) && (res.data === true)) {
+                                console.log(res);
+                                _this.$notify({
+                                    type: 'success',
+                                    message: _this.user_name + ': You have a new notice',
+                                    duration: 3000
+                                });
+                            }})
+                    }, 1)
+                }, 5000);
             },
+
+            get_notice() {
+                let _this = this;
+                this.$http.post("/v1.0/get_notice", this.user_info.EmployeeID).then(function(res) {
+                    if (res.status === 200) {
+                        console.log(res);
+                        _this.notices = res.data;
+                        _this.count = _this.notices.length;
+                    }})
+            },
+
         },
         destroyed() {
             clearInterval(this.myInterval)
         },
         mounted() {
-            this.check_notice()
+            // this.check_open();
+            // this.check_notice();
         }
     }
 </script>
