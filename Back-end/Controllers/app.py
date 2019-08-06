@@ -216,6 +216,22 @@ def get_meeting_history():
         'past': [('past', '4'), ('past', '5'), ('past', '6')],
     })
 
+@app.route('/backend/api/v1.0/get_ongoing_meeting', methods = ['POST'])
+def get_ongoing_meeting():
+    employee_id = request.json
+    return jsonify({'type': 'meeting', 'meeting_name': 'asds', 'meeting_topic': 'aa', 'is_routine': False, 'date': '2019-08-04', 'startTime': '00:30', 'endTime': '01:00', 'sites': ['Site1'], 'attendees': [['s1', 'ea'], ['s1', 'eb'], ['s1', 'ec']], 'need_hw_support': False, 'initiator': 'admin', 'start_timestamp': 1564849800000, 'end_timestamp': 1564851600000, 'meeting_outline': ['aaaa', 'ffff'], 'outline_descriptions': ['', ''], 'going': True, 'id': 2})
+
+
+@app.route('/backend/api/v1.0/get_employee', methods = ['POST'])
+def get_employee():
+    employee_id = request.json
+    db = DB()
+    history = db.selection_list_meeting(employee_id)
+    db.close()
+    print(history)
+    return jsonify(history)
+
+
 '''
 @app.route("/todo/api/v1.0/tasks", methods=["GET"])
 def read_tasks_documentation():

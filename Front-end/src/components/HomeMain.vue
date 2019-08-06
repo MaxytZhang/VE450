@@ -24,10 +24,10 @@
             <el-button type="primary" @click="test">Test</el-button>
 
         </el-col>
-        <el-col :span="12">
-            <el-calendar v-model="value">
-            </el-calendar>
-        </el-col>
+        <!--<el-col :span="12">-->
+            <!--<el-calendar v-model="value">-->
+            <!--</el-calendar>-->
+        <!--</el-col>-->
     </el-row>
     <el-row>
         <el-col :span="12">

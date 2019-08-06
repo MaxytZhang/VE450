@@ -185,6 +185,7 @@
 
                 ],
                 sites: ['Site1', 'Site2', 'Site3', 'Site4'],
+                user_info: JSON.parse(this.$store.state.UserInfo),
                 props: {multiple: true},
                 datePickerOptions: {
                     disabledDate(time) {
@@ -237,6 +238,22 @@
             resetForm(formName) {
                 this.$refs[formName].resetFields();
             },
+            get_employee() {
+                let _this = this;
+                this.$http.post("/v1.0/get_employee", this.user_info.EmployeeID).then(function (res) {
+                    console.log(res);
+                    if (res.status === 200) {
+                        console.log(res.data);
+                        _this.options = res.data
+                    }
+                    else {
+                        _this.options = []
+                    }
+                })
+            }
+        },
+        created() {
+            this.get_employee();
         }
     }
 </script>
