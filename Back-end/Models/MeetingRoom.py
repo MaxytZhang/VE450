@@ -18,7 +18,7 @@ class MeetingRoom:
 
         self.room_id = room_id
 
-        self.cursor.execute("SELECT * FROM meetingroom WHERE MeetingRoomID = %s", room_id)
+        self.cursor.execute("SELECT * FROM meetingroom WHERE MeetingRoomID = %d" % room_id)
         result = self.cursor.fetchone()
         self.capacity = result[1]
         self.occupancy = result[2]
