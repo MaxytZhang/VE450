@@ -3,7 +3,7 @@ import re
 import json
 import urllib
 import datetime
-from Models.DatabaseOperator import DatabaseOperator as DB
+from DatabaseOperator import DatabaseOperator as DB
 
 
 def convert_pytime(time):
@@ -13,12 +13,17 @@ def convert_pytime(time):
 badge_id = 2;
 db = DB()
 employee_id = db.badge_to_employee(badge_id)
-print(employee_id)
+db.delete_door_access(employee_id)
+#print(employee_id)
 currentT = datetime.datetime.now()
 current_date = currentT.date()
 current_time = convert_pytime(currentT.time())
 has_access = db.check_if_has_access(employee_id, current_date, current_time)
 
+sql = 'SELECT * FROM dooraccess'
+db.Cursor.execute(sql)
+result = db.Cursor.fetchall()[0]
+print(result)
 
 
 if has_access != 0:

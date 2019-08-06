@@ -161,10 +161,11 @@ class DatabaseOperator:
         print(result)
 
     def get_door_access(self, employee_id):
-        sql = 'SELECT door_access FROM dooraccess WHERE EmployeeID = %f'
+        sql = 'SELECT Access FROM dooraccess WHERE EmployeeID = %f'
         data = (employee_id)
         self.Cursor.execute(sql % data)
-        result = self.Cursor.fetchall()
+        result = self.Cursor.fetchall()[0][0]
+        print("GET")
         print(result)
         return result
 
@@ -212,5 +213,35 @@ class DatabaseOperator:
                     access = 1
                     break
         return access
-                
 
+    def meeting_history(self, employee_id):
+        sql = 'SELECT MeetingHistory FROM employee WHERE EmployeeID = {}'.format(employee_id)
+        self.Cursor.execute(sql)
+        result = json.loads(self.Cursor.fetchone()[0])
+        print(result['past'])
+        return_history = {'past': [], 'future': [], 'present': []}
+        for i in result['past']:
+            sql = 'SELECT * FROM meeting WHERE MeetingID = \'{}\''.format(i)
+            self.Cursor.execute(sql)
+            result2 = list(self.Cursor.fetchone())
+            a = ['MeetingID', 'Name', 'MeetingTopic', 'MeetingRooms', 'Date', 'StartTime', 'EndTime', 'Attendee',
+                 'Status', 'IsRoutine', 'Requires', 'Sites', 'Outline', 'Initiator', 'Memo']
+            a = dict(zip(a, result2))
+            return_history['past'].append(a)
+        for i in result['present']:
+            sql = 'SELECT * FROM meeting WHERE MeetingID = \'{}\''.format(i)
+            self.Cursor.execute(sql)
+            result2 = list(self.Cursor.fetchone())
+            a = ['MeetingID', 'Name', 'MeetingTopic', 'MeetingRooms', 'Date', 'StartTime', 'EndTime', 'Attendee',
+                 'Status', 'IsRoutine', 'Requires', 'Sites', 'Outline', 'Initiator', 'Memo']
+            a = dict(zip(a, result2))
+            return_history['present'].append(a)
+        for i in result['future']:
+            sql = 'SELECT * FROM meeting WHERE MeetingID = \'{}\''.format(i)
+            self.Cursor.execute(sql)
+            result2 = list(self.Cursor.fetchone())
+            a = ['MeetingID', 'Name', 'MeetingTopic', 'MeetingRooms', 'Date', 'StartTime', 'EndTime', 'Attendee',
+                 'Status', 'IsRoutine', 'Requires', 'Sites', 'Outline', 'Initiator', 'Memo']
+            a = dict(zip(a, result2))
+            return_history['future'].append(a)
+        return return_history
