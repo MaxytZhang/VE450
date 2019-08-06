@@ -126,7 +126,7 @@ class Meeting:
         limitation_flag = False  # see if the solution can be find
         for site_id in self.sites:
             site_recommend_list[str(site_id)] = []
-            self.cursor.execute("SELECT MeetingRoom FROM site WHERE SiteID = '%d'" % site_id)
+            self.cursor.execute("SELECT MeetingRoom FROM site WHERE SiteID = %d" % site_id)
             result = self.cursor.fetchone()
             site_list = json.loads(result[0])
             for room_id in site_list:
@@ -157,7 +157,16 @@ class Meeting:
                     site_recommend_list[str(site_id)].append(room_id)
                     if not site_recommend_list[str(site_id)]:
                         return {}, True
-        return site_recommend_list, limitation_flag
+        trans_list = []
+        for i in site_recommend_list:
+            s_name = self.cursor.execute("SELECT SiteName FROM site WHERE SiteID = %d" % int(i)).fetchone()[0]
+            trans_item = {'value': int(i), 'label': s_name, 'children': []}
+            c_list = []
+            for c in site_recommend_list[i]:
+                c_list.append({'value': c, 'label': 'room_' + str(c)})
+            trans_item['children'] = c_list
+            trans_list.append(trans_item)
+        return trans_list, limitation_flag
 
     def modify(self, meeting_name, meeting_topic, date, start_time, end_time, attendees, is_routine):
         flag = self.start_time == start_time and self.end_time == end_time and self.attendees == attendees
