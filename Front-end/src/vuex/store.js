@@ -8,6 +8,8 @@ const state = {
     Step1: null,
     Step2: null,
     Step3: null,
+    Authorization: localStorage.getItem('Authorization') ? localStorage.getItem('Authorization') : '',
+    UserInfo: localStorage.getItem('UserInfo') ? localStorage.getItem('UserInfo') : '',
 };
 
 const mutations = {
@@ -21,7 +23,24 @@ const mutations = {
     },
     setStep3(state, payload){
         state.Step3 = payload.Step3
+    },
+    changeLogin (state, user) {
+        state.Authorization = user.Authorization;
+        localStorage.setItem('Authorization', user.Authorization);
+    },
+    delLogin (state) {
+        state.Authorization = '';
+        localStorage.removeItem("Authorization");
+    },
+    setUserInfo(state, user){
+        state.UserInfo = user.UserInfo;
+        localStorage.setItem('UserInfo', user.UserInfo);
+    },
+    delUserInfo(state){
+        state.UserInfo = null;
+        localStorage.removeItem("UserInfo");
     }
+
 };
 
 export default new Vuex.Store({

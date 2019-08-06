@@ -2,7 +2,7 @@
 import datetime
 import json
 import pymysql
-import MeetingRoom
+import Models.MeetingRoom as MeetingRoom
 
 
 def convert_date(tstp):
@@ -32,7 +32,7 @@ class Meeting:
         self.meeting_id = 'meeting_' + str(meeting_info['initiator']) + '_' + str(meeting_info['start_timestamp'])
         self.meeting_name = meeting_info['meeting_name']
         self.meeting_topic = meeting_info['meeting_topic']
-        self.meeting_room_id = list(meeting_info['meeting_rooms'])
+        # self.meeting_room_id = list(meeting_info['meeting_rooms'])
         self.date = convert_date(int(meeting_info['start_timestamp']) / 1000)
         self.start_time = convert_time(int(meeting_info['start_timestamp']) / 1000)
         self.end_time = convert_time(int(meeting_info['end_timestamp']) / 1000)

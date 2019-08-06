@@ -9,12 +9,11 @@ import HelloWorld from './components/HelloWorld.vue'
 import HomeLayout from './components/HomeLayout'
 import Login from './components/Login'
 
+import Vue from 'vue'
+import {setCookie, getCookie, delCookie} from './util/util.js';
+
 export default {
   name: 'app',
-  components: {
-      Login,
-      HomeLayout
-  }
 }
 
 </script>

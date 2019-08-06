@@ -5,6 +5,8 @@ from Models.Meeting import Meeting
 import json
 import requests
 import datetime
+import time
+from Models.DatabaseOperator import DatabaseOperator as DB
 # import mysql.connector
 # from mysql.connector import Error
 
@@ -113,10 +115,10 @@ def add_type(tp, pkg):
 @app.route('/backend/api/v1.0/meetings', methods=['GET', 'POST'])
 def initiate_recommend():
     # initiate a meeting
-    print(request.form.to_dict())
+    print(request.json)
     # if not request.json:
     #     abort(400)
-    package = request.form
+    package = request.json
     if not package["type"] == "meeting":
         pkg = {}
         pkg = add_type("error",pkg)
@@ -144,9 +146,6 @@ def initiate_recommend():
 def test():
     print(request.json)
     print(request.form)
-    print(request.data)
-    print(request.get_json())
-    print(request.args)
     return jsonify({"type": "message", "message": "Connected."})
 
 
@@ -156,6 +155,41 @@ def test_upload():
     age = request.form['age']
     return jsonify(request.form)
 
+@app.route('/backend/api/v1.0/get_attendees', methods = ['GET', 'POST'])
+def get_attendees():
+    pass
+
+@app.route('/backend/api/v1.0/get_sites', methods = ['GET', 'POST'])
+def get_sites():
+    pass
+
+@app.route('/backend/api/v1.0/get_user')
+def get_user():
+    pass
+
+@app.route('/backend/api/v1.0/validate_login', methods = ['POST'])
+def validate_login():
+    user = request.json
+    print(type({}), type(user))
+    res = {
+        'token': None,
+        'info': {},
+        'pass': False,
+    }
+    db = DB()
+    validate, info = db.validate(user)
+    db.close()
+    print(validate, type(validate))
+    if validate == 1:
+        res['pass'] = True
+        res['info']['EmployeeID'] = info[0]
+        res['info']['SiteID'] = info[1]
+        res['info']['EmployName'] = info[2]
+        res['token'] = "{}{}{}".format(info[1], info[0], int(time.time()))
+    else:
+        res['pass'] = False
+    print(res)
+    return jsonify(res)
 '''
 @app.route("/todo/api/v1.0/tasks", methods=["GET"])
 def read_tasks_documentation():

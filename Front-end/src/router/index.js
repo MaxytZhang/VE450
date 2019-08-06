@@ -9,14 +9,19 @@ import NewMeetingStep1 from '../components/NewMeetingStep1'
 import NewMeetingStep2 from '../components/NewMeetingStep2'
 import NewMeetingStep3 from '../components/NewMeetingStep3'
 import NewMeetingStep4 from '../components/NewMeetingStep4'
+import NewMeetingForm from  '../components/NewMeetingStepForm'
 Vue.use(VueRouter);
 
 
-export default new VueRouter({
+const router =  new VueRouter({
     routes: [
         {
             path: '/',
-            component: Login,
+            redirect: '/login',
+        },
+        {
+            path: '/login',
+            component: Login
         },
         {
             path:'/home',
@@ -33,11 +38,11 @@ export default new VueRouter({
                         {
                             path:'/new_meeting',
                             // redirect: '/new_meeting/step1',
-                            component: NewMeetingStep1,
+                            component: NewMeetingForm,
                         },
                         {
                             path:'/new_meeting/step1',
-                            component: NewMeetingStep1,
+                            component: NewMeetingForm,
                         },
                         {
                             path:'/new_meeting/step2',
@@ -51,6 +56,10 @@ export default new VueRouter({
                             path:'/new_meeting/step4',
                             component: NewMeetingStep4,
                         },
+                        {
+                            path:'/new_meeting/step_form',
+                            component: NewMeetingForm,
+                        }
                     ]
                 },
                 {
@@ -60,4 +69,22 @@ export default new VueRouter({
             ]
         },
     ]
-})
+});
+
+
+router.beforeEach((to, from, next) => {
+    if (to.path === '/login') {
+        next();
+    } else {
+        let token = localStorage.getItem('Authorization');
+        console.log(token);
+        if (token === null || token === '') {
+            console.log(next);
+            next('/login');
+        } else {
+            next();
+        }
+    }
+});
+
+export default router;

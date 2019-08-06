@@ -38,17 +38,17 @@
 </template>
 
 <script>
-    import axios from 'axios';
-
     export default {
         name: "HomeMain",
         data(){
             return {
                 value: new Date(),
+                user_name: this.$cookieStore.getCookie('name'),
             }
         },
         methods: {
             to_new() {
+                console.log(this.user_name);
                 this.$router.push("/new_meeting")
             },
             to_ongoing(){
@@ -57,6 +57,7 @@
             test() {
                 this.$http.get("/v1.0/test").then(function(r) {
                         console.log(r);
+                        // console.log(this.$cookieStore.getCookie('name'));
                         alert(r.data.message)})}
             ,
         }

@@ -26,13 +26,36 @@
         <el-row type="flex" class="block">
             <el-col :span="4"><span>Meeting Schedule</span></el-col>
             <el-col :span="10">
-                <el-date-picker
-                        v-model="dates"
-                        type="datetimerange"
-                        range-separator="to"
-                        start-placeholder="start"
-                        end-placeholder="end">
-                </el-date-picker>
+                <div style="margin-bottom: 20px">
+                    <el-date-picker
+                            v-model="date"
+                            align="right"
+                            type="date"
+                            format="yyyy-MM-dd"
+                            placeholder="Select Date"
+                            :picker-options="datePickerOptions">
+                    </el-date-picker>
+                </div>
+                <el-time-select
+                        style="margin-right: 20px"
+                        v-model="startTime"
+                        :picker-options="{
+                            start: '00:00',
+                            step: '00:15',
+                            end: '23:45'
+                        }"
+                        placeholder="Select Start Time">
+                </el-time-select>
+                <el-time-select
+                        placeholder="Select End Time"
+                        v-model="endTime"
+                        :picker-options="{
+                        start: '00:00',
+                        step: '00:15',
+                        end: '23:45',
+                        minTime: startTime
+                        }">
+                </el-time-select>
             </el-col>
         </el-row>
 
@@ -143,23 +166,53 @@
                 props: {multiple: true},
                 selected_employees: [],
                 show_all: false,
-                dates: [new Date(), new Date()],
+                date: "",
                 sites: siteOptions,
                 selected_sites: [],
                 need_support: false,
+                startTime: '',
+                endTime: '',
+                datePickerOptions: {
+                    disabledDate(time) {
+                        return time.getTime() > Date.now();
+                    },
+                    shortcuts: [{
+                        text: 'Today',
+                        onClick(picker) {
+                            picker.$emit('pick', new Date());
+                        }
+                    }, {
+                        text: 'Tomorrow',
+                        onClick(picker) {
+                            const date = new Date();
+                            date.setTime(date.getTime() + 3600 * 1000 * 24);
+                            picker.$emit('pick', date);
+                        }
+                    }, {
+                        text: 'Next Week',
+                        onClick(picker) {
+                            const date = new Date();
+                            date.setTime(date.getTime() + 3600 * 1000 * 24 * 7);
+                            picker.$emit('pick', date);
+                        }
+                    }]
+                },
             };
         },
         methods: {
-            next(){
-                let step1_form={
+            next() {
+                console.log(this.$cookieStore.getCookie('name'));
+                console.log(this.date);
+                console.log(this.startTime);
+                let step1_form = {
                     'meeting_name': this.meeting_name,
-                    'meeting_topic' : this.meeting_topic,
+                    'meeting_topic': this.meeting_topic,
                     'is_routine': Number(this.is_routine),
                     'need_hw_support': Number(this.need_support),
-                    'start_timestamp': Number(this.dates[0].getTime()),
-                    'end_timestamp': Number(this.dates[1].getTime()),
-                    'attendees'  : this.selected_employees,
-                    'sites'        :  this.selected_sites,
+                    'start_timestamp': Number(this.date.getTime()),
+                    'end_timestamp': Number(this.date.getTime()),
+                    'attendees': this.selected_employees,
+                    'sites': this.selected_sites,
                 };
                 this.$store.commit('setStep1', {
                     Step1: step1_form
