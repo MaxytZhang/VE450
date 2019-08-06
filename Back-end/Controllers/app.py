@@ -227,7 +227,7 @@ def get_notice():
 def get_meeting_history():
     employee_id = request.json
     return jsonify({
-        'future': [('future', '1'), ('future', '2')],
+        'future': [1, 2],
         'present': [('present', '3')],
         'past': [('past', '4'), ('past', '5'), ('past', '6')],
     })
