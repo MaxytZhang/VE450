@@ -17,7 +17,7 @@ while True:
 
 old_fence = 0
 flag = True
-while True:
+while flag == True:
     html_post = requests.post(url = url, json = data, auth = ('admin', 'admin'))
     if flag == True and html_post.json()[0]['Position']['GEO_FENCE_ID'] in [5, 6, 7]:
         flag = False
@@ -25,9 +25,9 @@ while True:
         db = DB()
         db.update_door_access(badge_id, 2)
         db.close()
-    if html_post.json()[0]['Position']['GEO_FENCE_ID'] == 5 and old_fence != 5:
+    #if html_post.json()[0]['Position']['GEO_FENCE_ID'] == 5 and old_fence != 5:
         #print('In Region.')
-    if html_post.json()[0]['Position']['GEO_FENCE_ID'] != 5 and old_fence == 5:
+    #if html_post.json()[0]['Position']['GEO_FENCE_ID'] != 5 and old_fence == 5:
         #print('Leave Region.')
-        flag = True
+    #    flag = True
     old_fence = html_post.json()[0]['Position']['GEO_FENCE_ID']
