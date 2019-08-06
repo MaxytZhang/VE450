@@ -45,7 +45,30 @@
         methods: {
             load () {
                 if (this.count < 20) {
-                    this.count += 4
+                    this.count += 3;
+                    let _this = this;
+                    this.$http.post("/v1.0/get_notice", this.user_info.EmployeeID).then(function(res) {
+                        if (res.status === 200) {
+                            console.log(res.data);
+                            console.log(_this.notices);
+                            console.log(res.data == _this.notices);
+                            if (res.data.length > _this.count){
+                                _this.notices = res.data.slice(0, _this.count)
+                            }
+                            else if ((res.data.length <= _this.count) && (_this.notices != res.data) ){
+                                _this.notices = res.data;
+                                _this.count = res.data.length
+                            }
+                            else if (_this.notices == res.data){
+                                _this.notices = res.data;
+                                _this.count = res.data.length;
+                                _this.$notify({
+                                    type: 'error',
+                                    message: _this.user_name + ': You have no more notice',
+                                    duration: 3000
+                                });
+                            }
+                        }})
                 }
             },
             log_out () {
@@ -98,6 +121,9 @@
                     if (res.status === 200) {
                         console.log(res);
                         _this.notices = res.data;
+                        if (res.data.length > 3){
+                            _this.notices = res.data.slice(0, 3)
+                        }
                         _this.count = _this.notices.length;
                     }})
             },
