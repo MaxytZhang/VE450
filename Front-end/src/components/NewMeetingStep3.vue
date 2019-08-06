@@ -2,7 +2,7 @@
     <div>
         <el-row type="flex" class="block">
             <el-col :span="4"><span>Meeting Room Recommendation</span></el-col>
-            <el-cascader-panel :options="options" :props="props"></el-cascader-panel>
+            <el-cascader-panel :options="options" :props="props" v-model="meeting_room"></el-cascader-panel>
         </el-row>
         <el-row type="flex">
             <el-col :span="4">
@@ -67,18 +67,39 @@
 
                 ],
                 props: {multiple: true},
-                active: 2
+                active: 2,
+                meeting_room: []
             }
         },
         created() {
+            this.get_recommendation();
         },
         methods: {
             finish() {
+                let _this = this;
+                let meetingForm = this.$store.state.Step1;
+                meetingForm['meeting_room'] = _this.meeting_room;
+                this.$http.post("/v1.0/finish_recommendation", meetingForm).then(function (res) {
+                    console.log(res);
+                    if (res.status === 200) {
+
+                    }
+                    else {
+
+                    }
+                });
                 this.$router.push("/new_meeting/step4");
             },
             pre() {
                 this.$router.push("/new_meeting/step2");
-            }
+            },
+            get_recommendation() {
+                // let meetingForm = this.$store.state.Step1;
+                let options = this.$store.state.Step2;
+                this.options = options;
+                // console.log(meetingForm);
+                console.log(options)
+            },
         }
     }
 </script>

@@ -135,7 +135,8 @@ def initiate_recommend():
         pkg = add_type("message",pkg)
         return jsonify(pkg)
     elif flag == 0:
-        return jsonify(add_type("recommendation", recommendation))
+        # return jsonify(add_type("recommendation", recommendation))
+        return jsonify(recommendation)
     elif flag == 1:
         pkg = add_type("message and recommendation", recommendation)
         pkg = add_message("We have lowered the capacity to schedule the meeting.", pkg)
@@ -235,6 +236,13 @@ def get_employee():
     print(employee)
     return jsonify(employee)
 
+
+@app.route('/backend/api/v1.0/finish_recommendation', methods = ['POST'])
+def finish_recommendation():
+    meeting_info = request.json
+    print(meeting_info)
+
+    return jsonify(True)
 
 '''
 @app.route("/todo/api/v1.0/tasks", methods=["GET"])

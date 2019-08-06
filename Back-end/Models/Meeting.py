@@ -156,10 +156,11 @@ class Meeting:
                                 room_flag, flag_cap = room_id, room_cap
                     site_recommend_list[str(site_id)].append(room_id)
                     if not site_recommend_list[str(site_id)]:
-                        return {}, True
+                        return [], True
         trans_list = []
         for i in site_recommend_list:
-            s_name = self.cursor.execute("SELECT SiteName FROM site WHERE SiteID = %d" % int(i)).fetchone()[0]
+            self.cursor.execute("SELECT SiteName FROM site WHERE SiteID = %d" % int(i))
+            s_name = self.cursor.fetchone()[0]
             trans_item = {'value': int(i), 'label': s_name, 'children': []}
             c_list = []
             for c in site_recommend_list[i]:
