@@ -25,8 +25,8 @@ DROP TABLE IF EXISTS `dooraccess`;
 CREATE TABLE `dooraccess` (
   `EmployeeID` int(11) NOT NULL,
   `BadgeID` int(11) NOT NULL,
-  `Access` tinyint(4) DEFAULT NULL,
-  PRIMARY KEY (`BadgeID`),
+  `Access` tinyint(4) NOT NULL,
+  PRIMARY KEY (`BadgeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -48,4 +48,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-07-29 20:32:11
+-- Dump completed on 2019-08-07  1:29:21
