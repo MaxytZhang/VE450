@@ -109,7 +109,7 @@
                     sites: [],
                     attendees: [],
                     need_hw_support: false,
-                    initiator: this.$cookieStore.getCookie('name'),
+                    initiator: JSON.parse(this.$store.state.UserInfo).EmployeeID,
                 },
                 rules: {
                     meeting_name: [

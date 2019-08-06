@@ -2,8 +2,8 @@
 import datetime
 import json
 import pymysql
-from MeetingRoom import MeetingRoom
-from DatabaseOperator import DatabaseOperator
+from Models.MeetingRoom import MeetingRoom
+from Models.DatabaseOperator import DatabaseOperator
 
 
 def convert_date(tstp):
@@ -18,7 +18,7 @@ def convert_time(tstp):
 
 
 def meet_requirements(room_id, number, requires, start_time, end_time, meeting_date):
-    room = MeetingRoom.MeetingRoom(room_id)
+    room = MeetingRoom(room_id)
     if number <= room.capacity and requires <= room.hardware:
         if meeting_date in room.schedule:
             for slot_id in room.schedule[meeting_date][start_time:end_time]:
@@ -41,11 +41,24 @@ class Meeting:
         self.start_time = convert_time(int(meeting_info['start_timestamp']) / 1000)
         self.end_time = convert_time(int(meeting_info['end_timestamp']) / 1000)
         self.attendees = meeting_info['attendees']
+        self.attendees = []
+        for attendee in meeting_info['attendees']:
+            attendee_info = {
+                'id': attendee[1],
+                'site': attendee[0],
+                'feedback': None,
+                'status': None,
+            }
+            if attendee[1] == meeting_info['initiator']:
+                attendee_info['role'] = 'initiator'
+            else:
+                attendee_info['role'] = 'staff'
+            self.attendees.append(attendee_info)
         self.priority = 0
         self.status = -1  # before, during, after
         self.is_routine = meeting_info['is_routine']
         self.requires = meeting_info['need_hw_support']
-        self.sites = meeting_info['sites']
+        self.sites = list(set([attendee['site'] for attendee in self.attendees]))
         self.outline = meeting_info['meeting_outline']
         self.initiator = meeting_info['initiator']
         self.memo = {}
@@ -102,10 +115,10 @@ class Meeting:
         site_attendees = {}
         # Count the number of people in each site
         for member in self.attendees:
-            if str(member[0]) in site_attendees:
-                site_attendees[str(member[0])] += 1
+            if str(member['site']) in site_attendees:
+                site_attendees[str(member['site'])] += 1
             else:
-                site_attendees[str(member[0])] = 1
+                site_attendees[str(member['site'])] = 1
         for site_id in site_attendees:
             print(str(site_attendees[site_id]) + ' people in site ' + site_id + ' need to attend the meeting.')
 
@@ -113,7 +126,7 @@ class Meeting:
         limitation_flag = False  # see if the solution can be find
         for site_id in self.sites:
             site_recommend_list[str(site_id)] = []
-            self.cursor.execute("SELECT MeetingRoom FROM site WHERE SiteID = %d" % site_id)
+            self.cursor.execute("SELECT MeetingRoom FROM site WHERE SiteID = '%d'" % site_id)
             result = self.cursor.fetchone()
             site_list = json.loads(result[0])
             for room_id in site_list:
