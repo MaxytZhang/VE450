@@ -5,19 +5,18 @@
             <el-card class="box-card">
                 <div slot="header" class="clearfix">
                     <span>Ongoing Meeting</span>
-                    <el-button style="float: right; padding: 3px 0" type="text" @click="to_ongoing">check</el-button>
+
                 </div>
-                <div class="text item">
-                    16:45 : 18:00 R305
+                <div class="text item" v-for="(item, i) in meeting_history.present">
+                    No{{i}}   {{item}} <el-button style="float: right; padding: 3px 0" type="text" @click="to_ongoing">check</el-button>
                 </div>
             </el-card>
             <el-card class="box-card">
                 <div slot="header" class="clearfix">
                     <span>Next Meetings</span>
-                    <el-button style="float: right; padding: 3px 0" type="text">check</el-button>
                 </div>
-                <div v-for="i in 3" class="text item">
-                    <el-button>No. {{i}}</el-button>
+                <div class="text item" v-for="(item, i) in meeting_history.future">
+                    No{{i}}   {{item}}<el-button style="float: right; padding: 3px 0" type="text">check</el-button>
                 </div>
             </el-card>
             <!--<el-button type="primary" @click="this.to_new">Start A New Meeting</el-button>-->
@@ -40,10 +39,15 @@
 <script>
     export default {
         name: "HomeMain",
+        created() {
+            this.get_meeting_history()
+        },
         data(){
             return {
+                user_info: JSON.parse(this.$store.state.UserInfo),
                 value: new Date(),
                 user_name: this.$cookieStore.getCookie('name'),
+                meeting_history: {},
             }
         },
         methods: {
@@ -58,8 +62,17 @@
                 this.$http.get("/v1.0/test").then(function(r) {
                         console.log(r);
                         // console.log(this.$cookieStore.getCookie('name'));
-                        alert(r.data.message)})}
-            ,
+                        alert(r.data.message)})
+            },
+            get_meeting_history() {
+                let _this = this;
+                this.$http.post("/v1.0/get_meeting_history", this.user_info.EmployeeID).then(function(res) {
+                    console.log(res);
+                    // console.log(this.$cookieStore.getCookie('name'));
+                    _this.meeting_history = res.data;
+                    console.log(_this.meeting_history)
+                })
+            }
         }
     }
 </script>

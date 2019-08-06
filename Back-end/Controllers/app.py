@@ -205,7 +205,16 @@ def check_notice():
 @app.route('/backend/api/v1.0/get_notice', methods = ['POST'])
 def get_notice():
     employee_id = request.json
-    return jsonify(['I', 'love', 'you'])
+    return jsonify(['I', 'love', 'you', 'I', 'hate', 'you'])
+
+@app.route('/backend/api/v1.0/get_meeting_history', methods = ['POST'])
+def get_meeting_history():
+    employee_id = request.json
+    return jsonify({
+        'future': [('future', '1'), ('future', '2')],
+        'present': [('present', '3')],
+        'past': [('past', '4'), ('past', '5'), ('past', '6')],
+    })
 
 '''
 @app.route("/todo/api/v1.0/tasks", methods=["GET"])
