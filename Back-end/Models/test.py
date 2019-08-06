@@ -5,6 +5,7 @@ import MeetingRoom
 import pymysql
 import datetime
 import DatabaseOperator
+import random
 
 
 def convert_date(tstp):
@@ -69,6 +70,16 @@ def db_test():
 
 
 if __name__ == '__main__':
+    i = random.randint(1, 20)
+    print(i)
+    select_list = range(1, 41)
+    a = random.sample(select_list, i)
+    print(a)
+    db = DatabaseOperator.DatabaseOperator()
+    for i in a:
+        db.Cursor.execute('SELECT EmployeeName, SiteID FROM employee WHERE EmployeeID = %d' % i)
+        result = db.Cursor.fetchone()
+        k = {'id': i, 'name': result[0], 'site': result[1], 'status': -1, 'feedback': 'coming', 'role': 'staff'}
     json_meeting = json.loads("""{
         "id" : 0,
         "meeting_name" : "meeting_1",
@@ -294,7 +305,7 @@ if __name__ == '__main__':
 
     # DatabaseOperator.DatabaseOperator().selection_list(3)
     # DatabaseOperator.DatabaseOperator().selection_list_history('meeting_21_15324409580000')
-    print(DatabaseOperator.DatabaseOperator().selection_list_meeting(1))
+    # print(DatabaseOperator.DatabaseOperator().selection_list_meeting(1))
 
     # db_test()
     # new_room = MeetingRoom.MeetingRoom("room_1")

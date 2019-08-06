@@ -2,8 +2,8 @@
 import datetime
 import json
 import pymysql
-from Models.MeetingRoom import MeetingRoom
-from Models.DatabaseOperator import DatabaseOperator
+from MeetingRoom import MeetingRoom
+from DatabaseOperator import DatabaseOperator
 
 
 def convert_date(tstp):
