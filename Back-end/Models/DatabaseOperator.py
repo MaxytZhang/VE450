@@ -39,20 +39,43 @@ class DatabaseOperator:
             id = meeting.meeting_id,
             name = meeting.meeting_name,
             topic = meeting.meeting_topic,
-            attendees = json.dumps(meeting.attendees),
             room_list = json.dumps(meeting.meeting_room_id),
+            meeting_date = str(meeting.date),
             start_t = meeting.start_time,
             end_t = meeting.end_time,
+            attendees = json.dumps(meeting.attendees),
             status = meeting.status,
             routine = meeting.is_routine,
             hw_requires = meeting.requires,
+            site_json = json.dumps(meeting.sites),
             initiator = meeting.initiator,
-            meeting_date = str(meeting.date),
-            site_json = json.dumps(meeting.sites)
         )
         self.Cursor.execute(sql)
         self.Database.commit()
 
+    def modify_meeting(self, meeting):
+        sql = "UPDATE meeting SET Name = \'{name}\', MeetingTopic = \'{topic}\', MeetingRooms = \'{room_list}\', " \
+              "Date = \'{meeting_date}\', StartTime = {start_t}, EndTime = {end_t}, Attendee = \'{attendees}\', " \
+              "Status = {status}, IsRoutine = {routine}, Requires = {hw_requires}, Sites = \'{site_json}\', " \
+              "Initiator = {initiator} WHERE MeetingID = \'{meeting_id}\'".format(
+            meeting_id = meeting.meeting_id,
+            name = meeting.meeting_name,
+            topic = meeting.meeting_topic,
+            room_list = json.dumps(meeting.meeting_room_id),
+            meeting_date = str(meeting.date),
+            start_t = int(meeting.start_time),
+            end_t = int(meeting.end_time),
+            attendees = json.dumps(meeting.attendees),
+            status = meeting.status,
+            routine = meeting.is_routine,
+            hw_requires = meeting.requires,
+            site_json = json.dumps(meeting.sites),
+            initiator = meeting.initiator,
+        )
+        self.Cursor.execute(sql)
+        self.Database.commit()
+
+    # return: (dict) attendees in site
     def selection_list_site(self, site_id):
         sql = 'SELECT EmployeeID, EmployeeName FROM employee WHERE SiteID = {}'.format(site_id)
         self.Cursor.execute(sql)
@@ -68,6 +91,7 @@ class DatabaseOperator:
         site_json['children'] = list_json
         return site_json
 
+    # return: (dict) attendees of a meeting
     def selection_list_history(self, meeting_id):
         sql = 'SELECT Attendee FROM meeting WHERE meetingID = \'{}\''.format(meeting_id)
         self.Cursor.execute(sql)
@@ -76,6 +100,7 @@ class DatabaseOperator:
         site_json = {'value': 'history', 'label': 'Recent Selection', 'children': list_json}
         return site_json
 
+    # return: (list of dict) attendees of all past meeting
     def selection_list_meeting(self, employee):
         sql = 'SELECT JSON_EXTRACT(MeetingHistory, \'$.past\') FROM employee WHERE employeeID = \'%s\'' % employee
         self.Cursor.execute(sql)
@@ -95,4 +120,4 @@ class DatabaseOperator:
         # print(sql)
         self.Cursor.execute(sql)
         result = self.Cursor.fetchall()
-        print(result)
+        return result

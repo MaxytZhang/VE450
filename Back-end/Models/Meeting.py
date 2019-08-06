@@ -73,6 +73,9 @@ class Meeting:
     def init_db(self):
         DatabaseOperator.DatabaseOperator().init_meeting(self)
 
+    def update_db(self):
+        DatabaseOperator.DatabaseOperator().modify_meeting(self)
+
     @staticmethod
     def release(self, button_pressed, room_is_empty, current_time):
         if button_pressed:
