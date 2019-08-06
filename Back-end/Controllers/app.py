@@ -190,6 +190,23 @@ def validate_login():
         res['pass'] = False
     print(res)
     return jsonify(res)
+
+@app.route('/backend/api/v1.0/check_open', methods = ['POST'])
+def check_open():
+    employee_id = request.json
+    return jsonify(True)
+
+@app.route('/backend/api/v1.0/check_notice', methods = ['POST'])
+def check_notice():
+    employee_id = request.json
+    return jsonify(True)
+
+
+@app.route('/backend/api/v1.0/get_notice', methods = ['POST'])
+def get_notice():
+    employee_id = request.json
+    return jsonify(['I', 'love', 'you'])
+
 '''
 @app.route("/todo/api/v1.0/tasks", methods=["GET"])
 def read_tasks_documentation():

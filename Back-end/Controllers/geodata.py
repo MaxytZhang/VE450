@@ -6,9 +6,7 @@ import urllib
 headers = {}
 x = y = 0
 url = "http://localhost:8891/LBSCore/BadgeItems"
-data = {"Method": "GetByIDs", "Data": {"IDs": [4]}}
-# html_post = requests.post(url = url,data = data,auth=('admin','admin'))
-# html_get = requests.get(url = url, auth=('admin','admin'))
+data = {"Method": "GetByIDs", "Data": {"IDs": [2, 3, 4, 5]}}
 html_post = requests.post(url = url, json = data, auth = ('admin', 'admin'))
 x = html_post.json()[0]['Position']['X']
 while True:
