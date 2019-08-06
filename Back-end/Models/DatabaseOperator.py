@@ -188,5 +188,5 @@ class DatabaseOperator:
 
     def check_if_has_access(self, employee_id):
         #check future meetings and get the latest one
-        
+        sql = 'SELECT '
 
