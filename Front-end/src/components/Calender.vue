@@ -120,9 +120,9 @@ export default {
       currentYearMonth: moment().format('YYYY-MM'),
       weekTableHeader: [],
       dates: [],
-      showMonth: true,
+      showMonth: false,
       weekList: [],
-      headerContent: moment().format('YYYY-MM'),
+      headerContent: moment().format('MM/DD')+'~'+moment().add(6,'days').format('MM/DD'),
       currentWeekday: '',
       meeting: []
     }
@@ -241,9 +241,24 @@ export default {
           }
         }
       }
-      this.weekList[10].mon[2]= 1
-      this.meeting[0][10][2].meeting_info = 'test meeting R102'
+      this.weekList[10].mon[2] = 1
+      this.weekList[10].mon[3] = 1
+      this.meeting[0][10][2].meeting_info = 'Meeting1 @Room2'
+      this.meeting[0][10][3].meeting_info = 'Meeting1 @Room2'
       this.meeting[0][10][2].meeting_id = '1'
+      this.meeting[0][10][3].meeting_id = '1'
+      this.weekList[15].wed[0] = 1
+      this.weekList[15].wed[1] = 1
+      this.weekList[15].wed[2] = 1
+      this.weekList[15].wed[3] = 1
+      this.meeting[2][15][0].meeting_info = 'Meeting2 @Room1'
+      this.meeting[2][15][1].meeting_info = 'Meeting2 @Room1'
+      this.meeting[2][15][2].meeting_info = 'Meeting2 @Room1'
+      this.meeting[2][15][3].meeting_info = 'Meeting2 @Room1'
+      this.meeting[2][15][0].meeting_id = '2'
+      this.meeting[2][15][1].meeting_id = '2'
+      this.meeting[2][15][2].meeting_id = '2'
+      this.meeting[2][15][3].meeting_id = '2'
     },
     weekHeaderContent () {
       this.headerContent = moment(this.currentWeekday).format('MM/DD') + '~' + moment(this.currentWeekday).add(6, 'days').format('MM/DD')
