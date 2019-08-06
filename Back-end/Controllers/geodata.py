@@ -2,7 +2,8 @@ import requests
 import re
 import json
 import urllib
-headers = {}
+
+
 x = y = 0
 url = "http://localhost:8891/LBSCore/BadgeItems"
 data = {"Method":"GetByIDs","Data":{"IDs":[2,3,4,5]}}
