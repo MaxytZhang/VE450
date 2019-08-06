@@ -21,7 +21,7 @@ class MeetingRoom:
         self.cursor.execute("SELECT * FROM meetingroom WHERE MeetingRoomID = %d" % room_id)
         result = self.cursor.fetchone()
         self.capacity = result[1]
-        self.occupancy = result[2]
+        self.occupancy = result[2] #0 empty 1 occupy
         self.remote = result[3]
         self.schedule = json.loads(result[4])
         self.site = result[5]
@@ -33,6 +33,24 @@ class MeetingRoom:
 
     @property
     def is_empty(self):
+        if self.occupancy : 
+            current_date = datetime.datetime.now().date()
+            current_slot = datetime.datetime.now().time().hour * 4 + datetime.datetime.now().time().minute / 15
+            if self.schedule[current_date][current_slot] != '' :
+                meeting_id = self.schedule[current_date][current_slot]
+                self.cursor.execute("SELECT Attendee FROM meeting WHERE MeetingID = %s", meeting_id)
+                data = self.cursor.fetchone()
+                all_left = true
+                for item in data:
+                    self.cursor.execute("SELECT BadgeID FROM dooraccess WHERE EmployeID = %d", item["id"])
+                    badge_id =self.cursor.fetchone()
+                    self.cursor.execute("SELECT GEO_FENCE_ID FROM 20190801_pos_event_list WHERE BG_ID = %f", badge_id)
+                    geo_fence_id = self.cursor.fetchone()[-1]
+                    if geo_fence_id == 5 :
+                        all_left = false
+                        break
+                if all_left : 
+                    self.occupancy = 0
         return self.occupancy
 
     def update_schedule(self):
