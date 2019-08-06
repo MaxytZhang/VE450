@@ -2,18 +2,25 @@ import requests
 import re
 import json
 import urllib
+import datetime
 from Models.DatabaseOperator import DatabaseOperator as DB
+
+
+def convert_pytime(time):
+    return time.hour * 4 + time.minute / 15
 
 
 badge_id = 2;
 db = DB()
 employee_id = db.badge_to_employee(badge_id)
-
+currentT = datetime.datetime.now()
+current_date = currentT.date()
+current_time = convert_pytime(currentT.time())
+has_access = check_if_has_access(self, employee_id, current_date, current_time)
 db.create_door_access(badge_id, employee_id, has_access)
 db.close()
 
-
-
+if has_access != 0:
     x = y = 0
     url = "http://localhost:8891/LBSCore/BadgeItems"
     data = {"Method": "GetByIDs", "Data": {"IDs": [badge_id]}}
@@ -35,8 +42,11 @@ db.close()
             db = DB()
             db.update_door_access(badge_id, 2)
             db.close()
-        #if html_post.json()[0]['Position']['GEO_FENCE_ID'] == 5 and old_fence != 5:
+        if html_post.json()[0]['Position']['GEO_FENCE_ID'] == 5 and old_fence != 5:
             #print('In Region.')
+            db = DB()
+            db.delete_door_access(employee_id)
+            db.close()
         #if html_post.json()[0]['Position']['GEO_FENCE_ID'] != 5 and old_fence == 5:
             #print('Leave Region.')
         #    flag = True

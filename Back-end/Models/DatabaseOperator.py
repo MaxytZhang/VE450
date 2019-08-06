@@ -186,7 +186,7 @@ class DatabaseOperator:
         print(result)
         return employee_id
 
-    def check_if_has_access(self, employee_id):
+    def check_if_has_access(self, employee_id, date, current_time):
         #check future meetings and get the latest one
         sql = 'SELECT MeetingHistory FROM employee WHERE EmployeeID = %f'
         data = employee_id
@@ -195,8 +195,9 @@ class DatabaseOperator:
             target = MeetingHistory["present"][0]
         else:
             for mt_id in MeetingHistory["future"]:
-                sql = 'SELECT MeetingID FROM meeting WHERE Date = {}'
-                data = mt_id
+                sql = 'SELECT * FROM meeting WHERE Date = %s'
+                data = date
                 self.Cursor.execute(sql % data)
-                result = self.Cursor.fetchall()
+                result = self.Cursor.fetchone()
+                
 
