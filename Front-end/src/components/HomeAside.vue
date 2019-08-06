@@ -55,7 +55,25 @@
                 this.$http.post("/v1.0/get_user", this.user_name).then(function(r) {
                     console.log(r);
                     alert(r.data.message)})
-            }
+            },
+            check_notice() {
+                this.myInterval = window.setInterval(() => {
+                    setTimeout(() => {
+                        this.$http.get("/v1.0/check_notice", this.user_name).then(function(r) {
+                            console.log(r);
+                            alert(r.data.message)}) //调用接口的方法
+                    }, 1)
+                }, 5000);
+            },
+            check_open() {
+
+            },
+        },
+        destroyed() {
+            clearInterval(this.myInterval)
+        },
+        mounted() {
+            this.check_notice()
         }
     }
 </script>

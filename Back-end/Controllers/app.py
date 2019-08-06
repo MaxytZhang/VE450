@@ -190,6 +190,11 @@ def validate_login():
         res['pass'] = False
     print(res)
     return jsonify(res)
+
+@app.route('/backend/api/v1.0/check_notice', methods = ['GET'])
+def check_notice():
+    return jsonify(True)
+
 '''
 @app.route("/todo/api/v1.0/tasks", methods=["GET"])
 def read_tasks_documentation():
