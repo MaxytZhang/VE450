@@ -142,6 +142,17 @@ def initiate_recommend():
         pkg = add_message("We have lowered the capacity to schedule the meeting.", pkg)
         return jsonify(pkg)
 
+@app.route('/backend/api/v1.0/meeting_submit', methods=['GET','POST'])
+def submit_meeting():
+    package = request.form
+    if not package["type"] == "meeting":
+        pkg = {}
+        pkg = add_type("error",pkg)
+        pkg = add_message("Wrong package sent.", pkg)
+        return jsonify(pkg)
+    meeting_info = package
+    submit_mt = Meeting.Meeting(meeting_info)
+    submit_mt.submit()
 
 @app.route('/backend/api/v1.0/test', methods=['GET', 'POST'])
 def test():
