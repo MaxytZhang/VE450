@@ -35,6 +35,8 @@ def db_test():
     cursor.execute("SELECT version()")
     result = cursor.fetchone()
     print(result[0])
+    db.create_door_access(1, 1, 0)
+    #db.delete_door_access(1)
 
 
 if __name__ == '__main__':
@@ -302,3 +304,8 @@ if __name__ == '__main__':
     # db_test()
     # new_room = MeetingRoom.MeetingRoom("room_1")
     # print(new_room.set_schedule('meeting_158_1532440958', 3, 8))
+
+    db_test()
+    
+
+

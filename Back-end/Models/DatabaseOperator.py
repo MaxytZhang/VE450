@@ -129,6 +129,12 @@ class DatabaseOperator:
         result = self.Cursor.fetchall()
         print(result)
 
+    def delete_door_access(self, employee_id):
+        sql = 'DELETE FROM dooraccess WHERE EmployeeID = {}'.format(employee_id)
+        self.Cursor.execute(sql)
+        result = self.Cursor.fetchall()
+        print(result)
+
     def update_door_access(self, badge_id, door_access):
         sql = 'UPDATE dooraccess SET Access = door_access WHERE BadgeID = badge_id'
         self.Cursor.execute(sql)
