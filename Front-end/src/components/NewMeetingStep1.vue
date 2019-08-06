@@ -108,6 +108,7 @@
         name: "NewMeetingStep1",
         data() {
             return {
+                user_info: JSON.parse(this.$store.state.UserInfo),
                 meeting_name: '',
                 meeting_topic: '',
                 is_routine: false,
@@ -219,7 +220,23 @@
                 });
                 console.log(this.$store.state.Step1);
                 this.$router.push("/new_meeting/step2");
+            },
+            get_employee() {
+                let _this = this;
+                this.$http.post("/v1.0/get_employee", this.user_info.EmployeeID).then(function (res) {
+                    console.log(res);
+                    if (res.status === 200) {
+                        console.log(res.data);
+                        _this.options = res.data
+                    }
+                    else {
+                        _this.options = []
+                    }
+                })
             }
+        },
+        created() {
+            this.get_employee();
         }
     }
 </script>

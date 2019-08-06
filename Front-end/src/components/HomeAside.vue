@@ -51,15 +51,15 @@
                         if (res.status === 200) {
                             console.log(res.data);
                             console.log(_this.notices);
-                            console.log(res.data == _this.notices);
+                            console.log(res.data === _this.notices);
                             if (res.data.length > _this.count){
                                 _this.notices = res.data.slice(0, _this.count)
                             }
-                            else if ((res.data.length <= _this.count) && (_this.notices != res.data) ){
+                            else if ((_this.notices !== res.data) && (res.data.length <= _this.count)){
                                 _this.notices = res.data;
                                 _this.count = res.data.length
                             }
-                            else if (_this.notices == res.data){
+                            else if (_this.notices.length === res.data.length){
                                 _this.notices = res.data;
                                 _this.count = res.data.length;
                                 _this.$notify({
