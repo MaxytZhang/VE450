@@ -76,6 +76,14 @@ class DatabaseOperator:
         self.Cursor.execute(sql)
         self.Database.commit()
 
+    def site_list(self):
+        sql = 'SELECT SiteID, SiteName FROM site'
+        self.Cursor.execute(sql)
+        result = self.Cursor.fetchall()
+        keys = ['siteId', 'siteName']
+        site_json = [dict(zip(keys, item)) for item in result]
+        return site_json
+
     # return: (dict) attendees in site
     def selection_list_site(self, site_id):
         sql = 'SELECT EmployeeID, EmployeeName FROM employee WHERE SiteID = {}'.format(site_id)
@@ -101,15 +109,20 @@ class DatabaseOperator:
         site_json = {'value': 'history', 'label': 'Recent Selection', 'children': list_json}
         return site_json
 
-    # return: (list of dict) attendees of all past meeting
+    # return: (list of dict) attendees of all site and all past meeting
     def selection_list_meeting(self, employee):
+        attendee_list = []
+        for item in self.site_list():
+            attendee_list.append(self.selection_list_site(item['siteId']))
+
         sql = 'SELECT JSON_EXTRACT(MeetingHistory, \'$.past\') FROM employee WHERE employeeID = \'%s\'' % employee
         self.Cursor.execute(sql)
-        result = json.loads(self.Cursor.fetchone()[0])
-        history = []
-        for item in result:
-            history.append(self.selection_list_history(item))
-        return history
+        fetch_result = self.Cursor.fetchone()[0]
+        if fetch_result:
+            result = json.loads(fetch_result)
+            item = result[0]
+            attendee_list.append(self.selection_list_history(item))
+        return attendee_list
 
     def meeting_history(self, employee_id):
         sql = 'SELECT MeetingHistory FROM employee WHERE employeeID = {}'.format(employee_id)

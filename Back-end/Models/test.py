@@ -244,34 +244,34 @@ if __name__ == '__main__':
     # print(currentMeeting.attendees)
     # currentMeeting.update_db()
 
-    recommendation, flag = currentMeeting.recommend()
-    if recommendation == {}:
-        print("No recommendation available, please try some other time.")
-    elif flag == 0:
-        print("The recommended rooms are:")
-        for site_id in recommendation:
-            print(site_id+':')
-            for room_key in recommendation[str(site_id)]:
-                print(room_key, end=' ')
-            print('')
-    elif flag == 1:
-        print("We have lowered the capacity to schedule the meeting.\n")
-        print("The recommended rooms are:")
-        for site_id in recommendation:
-            print(site_id+':')
-            for room_key in recommendation[str(site_id)]:
-                print(room_key, end=' ')
-            print('')
+    # recommendation, flag = currentMeeting.recommend()
+    # if recommendation == {}:
+    #     print("No recommendation available, please try some other time.")
+    # elif flag == 0:
+    #     print("The recommended rooms are:")
+    #     for site_id in recommendation:
+    #         print(site_id+':')
+    #         for room_key in recommendation[str(site_id)]:
+    #             print(room_key, end=' ')
+    #         print('')
+    # elif flag == 1:
+    #     print("We have lowered the capacity to schedule the meeting.\n")
+    #     print("The recommended rooms are:")
+    #     for site_id in recommendation:
+    #         print(site_id+':')
+    #         for room_key in recommendation[str(site_id)]:
+    #             print(room_key, end=' ')
+    #         print('')
 
     # DatabaseOperator.DatabaseOperator().selection_list(3)
     # DatabaseOperator.DatabaseOperator().selection_list_history('meeting_21_15324409580000')
-    # DatabaseOperator.DatabaseOperator().selection_list_meeting(1)
+    print(DatabaseOperator.DatabaseOperator().selection_list_meeting(1))
 
     # db_test()
     # new_room = MeetingRoom.MeetingRoom("room_1")
     # print(new_room.set_schedule('meeting_158_1532440958', 3, 8))
 
-    db_test()
+    # db_test()
     
 
 
