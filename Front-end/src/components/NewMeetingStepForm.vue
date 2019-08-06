@@ -62,7 +62,7 @@
         </el-form-item>
 
         <el-form-item label="Meeting Site" required prop="sites">
-            <el-checkbox-group v-model="meetingForm.sites">
+            <el-checkbox-group v-model="meetingForm.sites" @change="handle_change">
                 <el-checkbox-button v-for="site in sites" :label="site" :key="site">{{site}}</el-checkbox-button>
             </el-checkbox-group>
         </el-form-item>
@@ -184,7 +184,7 @@
                     },
 
                 ],
-                sites: ['Site1', 'Site2', 'Site3', 'Site4'],
+                sites: [],
                 user_info: JSON.parse(this.$store.state.UserInfo),
                 props: {multiple: true},
                 datePickerOptions: {
@@ -240,20 +240,56 @@
             },
             get_employee() {
                 let _this = this;
-                this.$http.post("/v1.0/get_employee", this.user_info.EmployeeID).then(function (res) {
+                console.log(this.user_info.EmployeeID);
+                this.$http.post("/v1.0/get_employee", {'id': _this.user_info.EmployeeID}).then(function (res) {
                     console.log(res);
                     if (res.status === 200) {
                         console.log(res.data);
-                        _this.options = res.data
+                        _this.options = res.data;
+                        _this.options_copy = res.data;
                     }
                     else {
                         _this.options = []
                     }
                 })
-            }
+            },
+            get_sites() {
+                let _this = this;
+                console.log(this.user_info.EmployeeID);
+                this.$http.post("/v1.0/get_sites", {'id': _this.user_info.EmployeeID}).then(function (res) {
+                    console.log(res);
+                    if (res.status === 200) {
+                        console.log(res.data);
+                        for ( let site of res.data){
+                            _this.sites.push(site.siteName)
+                        }
+                        console.log(_this.sites)
+                    }
+                    else {
+                        _this.sites = []
+                    }
+                })
+            },
+            handle_change(sites) {
+                let _this = this;
+                sites.push("Recent Selection");
+                console.log(sites);
+                // let new_options = [];
+                let new_options = sites.map(function (s) {
+                    for ( let site of _this.options_copy){
+                        if (site.label === s) {
+                            return site
+                        }
+                    }
+                });
+                sites.pop("Recent Selection");
+                _this.options = new_options;
+                console.log(new_options)
+            },
         },
         created() {
             this.get_employee();
+            this.get_sites();
         }
     }
 </script>
