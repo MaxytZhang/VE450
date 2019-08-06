@@ -18,11 +18,11 @@ currentT = datetime.datetime.now()
 current_date = currentT.date()
 current_time = convert_pytime(currentT.time())
 has_access = db.check_if_has_access(employee_id, current_date, current_time)
-db.delete_door_access(2)
-db.create_door_access(badge_id, employee_id, has_access)
+
 
 
 if has_access != 0:
+    db.create_door_access(badge_id, employee_id, has_access)
     x = y = 0
     url = "http://localhost:8891/LBSCore/BadgeItems"
     data = {"Method": "GetByIDs", "Data": {"IDs": [badge_id]}}
@@ -36,20 +36,16 @@ if has_access != 0:
 
     old_fence = 0
     flag = True
-    while flag == True:
+    while True:
         html_post = requests.post(url = url, json = data, auth = ('admin', 'admin'))
         if flag == True and html_post.json()[0]['Position']['GEO_FENCE_ID'] in [5, 6, 7]:
             flag = False
             #print('Access Granted.')
-            db = DB()
             db.update_door_access(badge_id, 2)
-            db.close()
         if html_post.json()[0]['Position']['GEO_FENCE_ID'] == 5 and old_fence != 5:
             #print('In Region.')
-            db = DB()
             db.delete_door_access(employee_id)
-            db.close()
-        #if html_post.json()[0]['Position']['GEO_FENCE_ID'] != 5 and old_fence == 5:
+        if html_post.json()[0]['Position']['GEO_FENCE_ID'] != 5 and old_fence == 5:
             #print('Leave Region.')
-        #    flag = True
+            flag = True
         old_fence = html_post.json()[0]['Position']['GEO_FENCE_ID']
