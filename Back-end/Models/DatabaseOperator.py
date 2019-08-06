@@ -121,3 +121,24 @@ class DatabaseOperator:
         self.Cursor.execute(sql)
         result = self.Cursor.fetchall()
         return result
+
+    def create_door_access(self, badge_id, employee_id, has_access):
+        sql = 'INSERT INTO dooraccess(EmployeeID, BadgeID, Access) VALUES (employee_id, badge_id, has_access)'
+        self.Cursor.execute(sql)
+        self.Database.commit()
+        result = self.Cursor.fetchall()
+        print(result)
+
+    def update_door_access(self, badge_id, door_access):
+        sql = 'UPDATE dooraccess SET Access = door_access WHERE BadgeID = badge_id'
+        self.Cursor.execute(sql)
+        self.Database.commit()
+        result = self.Cursor.fetchall()
+        print(result)
+
+    def get_door_access(self, employee_id):
+        sql = 'SELECT door_access FROM dooraccess WHERE EmployeeID = {}'.format(employee_id)
+        self.Cursor.execute(sql)
+        result = self.Cursor.fetchall()
+        print(result)
+

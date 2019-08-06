@@ -3,10 +3,10 @@ import re
 import json
 import urllib
 
-headers = {}
+badge_id = 2;
 x = y = 0
 url = "http://localhost:8891/LBSCore/BadgeItems"
-data = {"Method": "GetByIDs", "Data": {"IDs": [2, 3, 4, 5]}}
+data = {"Method": "GetByIDs", "Data": {"IDs": [badge_id]}}
 html_post = requests.post(url = url, json = data, auth = ('admin', 'admin'))
 x = html_post.json()[0]['Position']['X']
 while True:
@@ -21,10 +21,13 @@ while True:
     html_post = requests.post(url = url, json = data, auth = ('admin', 'admin'))
     if flag == True and html_post.json()[0]['Position']['GEO_FENCE_ID'] in [5, 6, 7]:
         flag = False
-        print('Access Granted.')
+        #print('Access Granted.')
+        db = DB()
+        db.update_door_access(badge_id, 2)
+        db.close()
     if html_post.json()[0]['Position']['GEO_FENCE_ID'] == 5 and old_fence != 5:
-        print('In Region.')
+        #print('In Region.')
     if html_post.json()[0]['Position']['GEO_FENCE_ID'] != 5 and old_fence == 5:
-        print('Leave Region.')
+        #print('Leave Region.')
         flag = True
     old_fence = html_post.json()[0]['Position']['GEO_FENCE_ID']
