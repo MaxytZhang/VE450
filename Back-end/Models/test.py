@@ -35,8 +35,37 @@ def db_test():
     cursor.execute("SELECT version()")
     result = cursor.fetchone()
     print(result[0])
-    db.create_door_access(1, 1, 0)
-    #db.delete_door_access(1)
+    sql = 'SELECT * FROM dooraccess'
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    print(result)
+    employee_id, badge_id, has_access = 1,1,0
+    sql = 'INSERT INTO dooraccess(EmployeeID, BadgeID, Access) VALUES (%f, %f, %f)'
+    data = (employee_id, badge_id, has_access)
+    cursor.execute(sql % data)
+    db.commit()
+    sql = 'SELECT * FROM dooraccess'
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    print(result)
+    badge_id, has_access = 1,1
+    sql = 'UPDATE dooraccess SET Access = %f WHERE BadgeID = %f'
+    data = (badge_id, has_access)
+    cursor.execute(sql % data)
+    db.commit()
+    sql = 'SELECT * FROM dooraccess'
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    print(result)
+    employee_id = 1
+    sql = 'DELETE FROM dooraccess WHERE EmployeeID = %f'
+    data = (employee_id)
+    cursor.execute(sql % data)
+    db.commit()
+    sql = 'SELECT * FROM dooraccess'
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    print(result)
 
 
 if __name__ == '__main__':

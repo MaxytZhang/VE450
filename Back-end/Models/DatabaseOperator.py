@@ -123,8 +123,9 @@ class DatabaseOperator:
         return result
 
     def create_door_access(self, badge_id, employee_id, has_access):
-        sql = 'INSERT INTO dooraccess(EmployeeID, BadgeID, Access) VALUES (employee_id, badge_id, has_access)'
-        self.Cursor.execute(sql)
+        sql = 'INSERT INTO dooraccess(EmployeeID, BadgeID, Access) VALUES (%f, %f, %f)'
+        data = (employee_id, badge_id, has_access)
+        self.Cursor.execute(sql % data)
         self.Database.commit()
         result = self.Cursor.fetchall()
         print(result)
@@ -132,26 +133,30 @@ class DatabaseOperator:
     def delete_door_access(self, employee_id):
         sql = 'DELETE FROM dooraccess WHERE EmployeeID = {}'.format(employee_id)
         self.Cursor.execute(sql)
+        self.Database.commit()
         result = self.Cursor.fetchall()
         print(result)
 
     def update_door_access(self, badge_id, door_access):
-        sql = 'UPDATE dooraccess SET Access = door_access WHERE BadgeID = badge_id'
+        sql = 'UPDATE dooraccess SET Access = %f WHERE BadgeID = %f'
+        data = (badge_id, has_access)
         self.Cursor.execute(sql)
         self.Database.commit()
         result = self.Cursor.fetchall()
         print(result)
 
     def get_door_access(self, employee_id):
-        sql = 'SELECT door_access FROM dooraccess WHERE EmployeeID = {}'.format(employee_id)
-        self.Cursor.execute(sql)
+        sql = 'SELECT door_access FROM dooraccess WHERE EmployeeID = %f'
+        data = (employee_id)
+        self.Cursor.execute(sql % data)
         result = self.Cursor.fetchall()
         print(result)
         return result
 
     def left_meeting_room(self, badge_id, geo_fence_id):
-        sql = 'SELECT GEO_FENCE_ID FROM 20190801_pos_event_list WHERE BG_ID = {}'.format(badge_id)
-        self.Cursor.execute(sql)
+        sql = 'SELECT GEO_FENCE_ID FROM 20190801_pos_event_list WHERE BG_ID = %f'
+        data = (badge_id)
+        self.Cursor.execute(sql % data)
         result = self.Cursor.fetchall()[-1]
         print(result)
         if result != geo_fence_id:
