@@ -13,12 +13,14 @@ def convert_pytime(time):
 badge_id = 2;
 db = DB()
 employee_id = db.badge_to_employee(badge_id)
+print(employee_id)
 currentT = datetime.datetime.now()
 current_date = currentT.date()
 current_time = convert_pytime(currentT.time())
-has_access = check_if_has_access(self, employee_id, current_date, current_time)
+has_access = db.check_if_has_access(employee_id, current_date, current_time)
+db.delete_door_access(2)
 db.create_door_access(badge_id, employee_id, has_access)
-db.close()
+
 
 if has_access != 0:
     x = y = 0

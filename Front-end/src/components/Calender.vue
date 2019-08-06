@@ -108,7 +108,7 @@
     </div>
   </div>
 </template>
- 
+
 <script>
 import moment from 'moment'
 export default {
@@ -139,6 +139,7 @@ export default {
         this.weekHeaderContent()
         this.createWeekList()
       }
+      console.log(this.headerContent)
     },
     detail(index, slot, day){
       if (this.meeting[day-1][index][slot].meeting_id != '0') alert()
@@ -153,6 +154,8 @@ export default {
         this.weekHeaderContent()
         this.createWeekList()
       }
+        console.log(this.headerContent)
+
     },
     switchMonth () {
       this.showMonth = true
@@ -253,10 +256,11 @@ export default {
     let daysDistance = 1 - weekday
     this.currentWeekday = moment().add(daysDistance, 'days')
     this.createWeekList()
+      console.log(this.headerContent)
   }
 }
 </script>
- 
+
 <style lang="less" scoped>
 #parent {
   margin: 2rem auto;
