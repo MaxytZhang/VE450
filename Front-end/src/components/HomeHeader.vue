@@ -47,7 +47,7 @@
                 else if (this.$route.path === '/ongoing_meeting'){
                     return '3'
                 }
-                else if (this.$route.path === '/weekly_calendar'){
+                else if (this.$route.path === '/calendar'){
                     return '4'
                 }
                 else if (this.$route.path === '/meeting_history'){

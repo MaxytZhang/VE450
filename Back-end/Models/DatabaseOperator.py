@@ -139,6 +139,7 @@ class DatabaseOperator:
     def create_door_access(self, badge_id, employee_id, has_access):
         sql = 'INSERT INTO dooraccess(EmployeeID, BadgeID, Access) VALUES (%f, %f, %f)'
         data = (employee_id, badge_id, has_access)
+        print(data)
         self.Cursor.execute(sql % data)
         self.Database.commit()
         result = self.Cursor.fetchall()
@@ -179,26 +180,39 @@ class DatabaseOperator:
             return False
 
     def badge_to_employee(self, badge_id):
-        sql = 'SELECT EmployeeID FROM employee WHERE BG_ID = %f'
+        sql = "SELECT EmployeeID FROM employee WHERE BgID = '%f'"
         data = (badge_id)
         self.Cursor.execute(sql % data)
         employee_id = self.Cursor.fetchall()
-        print(result)
-        return employee_id
+        # print(result)
+        return employee_id[0][0]
 
-    def check_if_has_access(self, employee_id):
+    def check_if_has_access(self, employee_id, date, current_time):
         #check future meetings and get the latest one
         sql = 'SELECT MeetingHistory FROM employee WHERE EmployeeID = %f'
         data = employee_id
         self.Cursor.execute(sql % data)
+        MeetingHistory = json.loads(self.Cursor.fetchall()[0][0])
+        print(type(MeetingHistory), MeetingHistory)
+        access = 0
         if MeetingHistory["present"] != []:
             target = MeetingHistory["present"][0]
+            access = 1
         else:
             for mt_id in MeetingHistory["future"]:
-                sql = 'SELECT MeetingID FROM meeting WHERE Date = {}'
-                data = mt_id
-                self.Cursor.execute(sql % data)
-                result = self.Cursor.fetchall()
+                sql = 'SELECT Date FROM meeting WHERE MeetingID = %f'
+                self.Cursor.execute(sql % mt_id)
+                date = self.Cursor.fetchone()
+                if current_date != date:
+                    continue
+                sql = 'SELECT StartTime FROM meeting WHERE MeetingID = %f'
+                self.Cursor.execute(sql % mt_id)
+                start_time = self.Cursor.fetchone()
+                if start_time - current_time <= 1:
+                    access = 1
+                    break
+        return access
+                
 
     def meeting_history(self, employee_id):
         sql = 'SELECT MeetingHistory FROM employee WHERE EmployeeID = {}'.format(employee_id)

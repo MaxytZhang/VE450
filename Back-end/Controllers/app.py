@@ -252,7 +252,6 @@ def get_employee():
 def finish_recommendation():
     meeting_info = request.json
     print(meeting_info)
-
     return jsonify(True)
 
 '''
