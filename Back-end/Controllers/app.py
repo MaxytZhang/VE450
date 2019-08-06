@@ -135,12 +135,24 @@ def initiate_recommend():
         pkg = add_type("message",pkg)
         return jsonify(pkg)
     elif flag == 0:
-        return jsonify(add_type("recommendation", recommendation))
+        # return jsonify(add_type("recommendation", recommendation))
+        return jsonify(recommendation)
     elif flag == 1:
         pkg = add_type("message and recommendation", recommendation)
         pkg = add_message("We have lowered the capacity to schedule the meeting.", pkg)
         return jsonify(pkg)
 
+@app.route('/backend/api/v1.0/meeting_submit', methods=['GET','POST'])
+def submit_meeting():
+    package = request.form
+    if not package["type"] == "meeting":
+        pkg = {}
+        pkg = add_type("error",pkg)
+        pkg = add_message("Wrong package sent.", pkg)
+        return jsonify(pkg)
+    meeting_info = package
+    submit_mt = Meeting.Meeting(meeting_info)
+    submit_mt.submit()
 
 @app.route('/backend/api/v1.0/test', methods=['GET', 'POST'])
 def test():
@@ -155,13 +167,15 @@ def test_upload():
     age = request.form['age']
     return jsonify(request.form)
 
-@app.route('/backend/api/v1.0/get_attendees', methods = ['GET', 'POST'])
-def get_attendees():
-    pass
 
-@app.route('/backend/api/v1.0/get_sites', methods = ['GET', 'POST'])
+@app.route('/backend/api/v1.0/get_sites', methods = ['POST'])
 def get_sites():
-    pass
+    employee_id = request.json['id']
+    print(employee_id)
+    db = DB()
+    sites = db.site_list()
+    print(sites)
+    return jsonify(sites)
 
 @app.route('/backend/api/v1.0/get_user')
 def get_user():
@@ -178,7 +192,6 @@ def validate_login():
     }
     db = DB()
     validate, info = db.validate(user)
-    db.close()
     print(validate, type(validate))
     if validate == 1:
         res['pass'] = True
@@ -227,13 +240,20 @@ def get_ongoing_meeting():
 
 @app.route('/backend/api/v1.0/get_employee', methods = ['POST'])
 def get_employee():
-    employee_id = request.json
+    employee_id = request.json['id']
+    print(employee_id)
     db = DB()
-    history = db.selection_list_meeting(employee_id)
-    db.close()
-    print(history)
-    return jsonify(history)
+    employee = db.selection_list_meeting(employee_id)
+    print(employee)
+    return jsonify(employee)
 
+
+@app.route('/backend/api/v1.0/finish_recommendation', methods = ['POST'])
+def finish_recommendation():
+    meeting_info = request.json
+    print(meeting_info)
+
+    return jsonify(True)
 
 '''
 @app.route("/todo/api/v1.0/tasks", methods=["GET"])

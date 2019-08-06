@@ -36,8 +36,6 @@
 </template>
 
 <script>
-    import axios from 'axios';
-    import qs from 'qs'
     export default {
         name: "NewMeetingStep2",
         data() {
@@ -62,13 +60,20 @@
 
             },
             submit(){
+                let _this = this;
                 let meetingForm = this.$store.state.Step1;
                 meetingForm["meeting_outline"] = this.outlines;
                 meetingForm["outline_descriptions"] = this.descriptions;
                 console.log(meetingForm);
+                this.$store.commit('setStep1', {
+                    Step1: meetingForm
+                });
                 this.$http.post("/v1.0/meetings", meetingForm).then(function (res) {
                     if (res.status === 200) {
-                        console.log(res)
+                        console.log(res);
+                        _this.$store.commit('setStep2', {
+                            Step2: res.data
+                        });
                     }
                 });
                 this.$router.push("/new_meeting/step3");

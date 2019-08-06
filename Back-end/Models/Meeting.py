@@ -2,8 +2,8 @@
 import datetime
 import json
 import pymysql
-from Models.MeetingRoom import MeetingRoom
-from Models.DatabaseOperator import DatabaseOperator
+from MeetingRoom import MeetingRoom
+from DatabaseOperator import DatabaseOperator
 
 
 def convert_date(tstp):
@@ -18,7 +18,7 @@ def convert_time(tstp):
 
 
 def meet_requirements(room_id, number, requires, start_time, end_time, meeting_date):
-    room = MeetingRoom.MeetingRoom(room_id)
+    room = MeetingRoom(room_id)
     if number <= room.capacity and requires <= room.hardware:
         if meeting_date in room.schedule:
             for slot_id in room.schedule[meeting_date][start_time:end_time]:
@@ -36,16 +36,31 @@ class Meeting:
         self.meeting_id = 'meeting_' + str(meeting_info['initiator']) + '_' + str(meeting_info['start_timestamp'])
         self.meeting_name = meeting_info['meeting_name']
         self.meeting_topic = meeting_info['meeting_topic']
-        self.meeting_room_id = meeting_info['meeting_rooms']
+        self.meeting_room_id = None
+        if 'meeting_room' in meeting_info:
+            self.meeting_room_id = [x[1] for x in meeting_info['meeting_room']]
         self.date = convert_date(int(meeting_info['start_timestamp']) / 1000)
         self.start_time = convert_time(int(meeting_info['start_timestamp']) / 1000)
         self.end_time = convert_time(int(meeting_info['end_timestamp']) / 1000)
         self.attendees = meeting_info['attendees']
+        self.attendees = []
+        for attendee in meeting_info['attendees']:
+            attendee_info = {
+                'id': attendee[1],
+                'site': attendee[0],
+                'feedback': None,
+                'status': None,
+            }
+            if attendee[1] == meeting_info['initiator']:
+                attendee_info['role'] = 'initiator'
+            else:
+                attendee_info['role'] = 'staff'
+            self.attendees.append(attendee_info)
         self.priority = 0
         self.status = -1  # before, during, after
         self.is_routine = meeting_info['is_routine']
         self.requires = meeting_info['need_hw_support']
-        self.sites = meeting_info['sites']
+        self.sites = list(set([attendee['site'] for attendee in self.attendees]))
         self.outline = meeting_info['meeting_outline']
         self.initiator = meeting_info['initiator']
         self.memo = {}
@@ -74,10 +89,12 @@ class Meeting:
             send_outline(attendees.id)
 
     def init_db(self):
-        DatabaseOperator.DatabaseOperator().init_meeting(self)
+        db = DatabaseOperator()
+        db.init_meeting(self)
 
     def update_db(self):
-        DatabaseOperator.DatabaseOperator().modify_meeting(self)
+        db = DatabaseOperator()
+        db.modify_meeting(self)
 
     @staticmethod
     def release(self, button_pressed, room_is_empty, current_time):
@@ -97,6 +114,7 @@ class Meeting:
                         room = MeetingRoom.MeetingRoom(empty_id)
                         room.change_schedule(self.meeting_id, current_time)
         self.end_time = current_time
+        self.end_meeting()
 
     def recommend(self):
         site_attendees = {}
@@ -143,8 +161,25 @@ class Meeting:
                                 room_flag, flag_cap = room_id, room_cap
                     site_recommend_list[str(site_id)].append(room_id)
                     if not site_recommend_list[str(site_id)]:
-                        return {}, True
-        return site_recommend_list, limitation_flag
+                        return [], True
+        trans_list = []
+        for i in site_recommend_list:
+            self.cursor.execute("SELECT SiteName FROM site WHERE SiteID = %d" % int(i))
+            s_name = self.cursor.fetchone()[0]
+            trans_item = {'value': int(i), 'label': s_name, 'children': []}
+            c_list = []
+            for c in site_recommend_list[i]:
+                c_list.append({'value': c, 'label': 'room_' + str(c)})
+            trans_item['children'] = c_list
+            trans_list.append(trans_item)
+        return trans_list, limitation_flag
+
+    def submit(self):
+        # try:
+        #     self.init_db()
+        # except:
+        #     self.update_db()
+        self.init_db()
 
     def modify(self, meeting_name, meeting_topic, date, start_time, end_time, attendees, is_routine):
         flag = self.start_time == start_time and self.end_time == end_time and self.attendees == attendees
@@ -168,3 +203,25 @@ class Meeting:
             room.set_schedule(self.meeting_id, self.end_time, self.end_time + extend_time)
         self.end_time = self.end_time + extend_time
         return True
+
+    def start_meeting(self):
+        self.cursor.execute("SELECT Attendee FROM meeting WHERE MeetingID = {}".format(self.meeting_id))
+        attendee_list = json.loads(self.cursor.fetchone()[0])
+        for employee in attendee_list:
+            self.cursor.execute("SELECT MeetingHistory FROM employee WHERE EmployeeID = {}".format(employee[0]))
+            e = json.loads(self.cursor.fetchone()[0])
+            e['future'].remove(self.meeting_id)
+            e['present'].append(self.meeting_id)
+            self.cursor.execute("UPDATE employee SET MeetingHistory = \'{}\' WHERE EmployeeID = {}".format(e, employee[0]))
+            self.db.commit()
+
+    def end_meeting(self):
+        self.cursor.execute("SELECT Attendee FROM meeting WHERE MeetingID = {}".format(self.meeting_id))
+        attendee_list = json.loads(self.cursor.fetchone()[0])
+        for employee in attendee_list:
+            self.cursor.execute("SELECT MeetingHistory FROM employee WHERE EmployeeID = {}".format(employee[0]))
+            e = json.loads(self.cursor.fetchone()[0])
+            e['present'].remove(self.meeting_id)
+            e['past'].append(self.meeting_id)
+            self.cursor.execute("UPDATE employee SET MeetingHistory = \'{}\' WHERE EmployeeID = {}".format(e, employee[0]))
+            self.db.commit()

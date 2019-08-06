@@ -11,6 +11,7 @@ import NewMeetingStep3 from '../components/NewMeetingStep3'
 import NewMeetingStep4 from '../components/NewMeetingStep4'
 import NewMeetingForm from  '../components/NewMeetingStepForm'
 import OngoingMeetingMain from '../components/OngoingMeetingMain'
+import Calendar from '../components/Calender'
 Vue.use(VueRouter);
 
 
@@ -71,6 +72,10 @@ const router =  new VueRouter({
                     path: '/ongoing_meeting',
                     component: OngoingMeetingMain
                 },
+                {
+                    path: '/calendar',
+                    component: Calendar
+                }
             ]
         },
     ]

@@ -5,6 +5,7 @@ import MeetingRoom
 import pymysql
 import datetime
 import DatabaseOperator
+import random
 
 
 def convert_date(tstp):
@@ -69,23 +70,17 @@ def db_test():
 
 
 if __name__ == '__main__':
-    json_meeting = json.loads("""{
-        "id" : 0,
-        "meeting_name" : "meeting_1",
-        "meeting_topic" : "design review 3 is killing me",
-        "meeting_rooms" : ["room1","room2","room3"],
-        "start_timestamp" : 15324409580000,
-        "end_timestamp" : 15324409600000,
-        "date": "2016-11-24",
-        "attendees" : [{"id": 1, "name": "employee_1", "status": -1, "feedback": "coming", "role": "initiator", "site": 1}, {"id": 2, "name": "employee_2", "status": -1, "feedback": "coming", "role": "staff", "site": 2}, {"id": 3, "name": "employee_3", "status": -1, "feedback": "coming", "role": "staff", "site": 1}],
-        "status" : 1,
-        "is_routine" : 0,
-        "need_hw_support" : 1,
-        "sites" : [1, 2],
-        "meeting_memo" : {"id1" : "memo1", "id2" : "memo2"},
-        "meeting_outline" : ["outline1", "outline2"],
-        "initiator" : 24
-    }""")
+    # i = random.randint(1, 20)
+    # print(i)
+    # select_list = range(1, 41)
+    # a = random.sample(select_list, i)
+    # print(a)
+    # db = DatabaseOperator.DatabaseOperator()
+    # for i in a:
+    #     db.Cursor.execute('SELECT EmployeeName, SiteID FROM employee WHERE EmployeeID = %d' % i)
+    #     result = db.Cursor.fetchone()
+    #     k = {'id': i, 'name': result[0], 'site': result[1], 'status': -1, 'feedback': 'coming', 'role': 'staff'}
+    json_meeting = json.loads('{"type": "meeting", "meeting_name": "asdas", "meeting_topic": "assa", "is_routine": 0, "date": "2019-08-06", "startTime": "01:00", "endTime": "03:15", "sites": ["SiteA"], "attendees": [[1, 1], [1, 4], [1, 13], [1, 20], [1, 21], [1, 24], [1, 31], [1, 34], [1, 35], [1, 37], [1, 39], [1, 40]], "need_hw_support": 0, "initiator": 1, "start_timestamp": 1565024400000, "end_timestamp": 1565032500000, "meeting_outline": ["asdasd"], "outline_descriptions": [\"\"], "meeting_room": [[1, 5]]}')
     meetingRoom = {
         "site_1_1": {
             "id": 1,
@@ -253,7 +248,7 @@ if __name__ == '__main__':
         },
     }
     currentMeeting = Meeting.Meeting(json_meeting)
-    # currentMeeting.init_db()
+    currentMeeting.submit()
     # currentMeeting.id = 1
     # currentMeeting.meeting_name = generate_name(1)
     # currentMeeting.meeting_topic = 'test meeting'
@@ -294,7 +289,7 @@ if __name__ == '__main__':
 
     # DatabaseOperator.DatabaseOperator().selection_list(3)
     # DatabaseOperator.DatabaseOperator().selection_list_history('meeting_21_15324409580000')
-    print(DatabaseOperator.DatabaseOperator().selection_list_meeting(1))
+    # print(DatabaseOperator.DatabaseOperator().selection_list_meeting(1))
 
     # db_test()
     # new_room = MeetingRoom.MeetingRoom("room_1")
