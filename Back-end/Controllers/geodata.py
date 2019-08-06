@@ -34,7 +34,7 @@ start = time.clock()
 flag = 0
 while True:
 	end = time.clock()
-	if (end - start) > 7 and flag == 0:
+	if (end - start) > 6.5 and flag == 0:
 		print('Access Granted.')
 		flag = 1
 	if (end - start) > 9 and flag == 1:
