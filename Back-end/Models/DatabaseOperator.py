@@ -116,5 +116,15 @@ class DatabaseOperator:
         self.Cursor.execute(sql)
         result = self.Cursor.fetchall()
         print(result)
+        return result
 
+    def left_meeting_room(self, badge_id, geo_fence_id):
+        sql = 'SELECT GEO_FENCE_ID FROM 20190801_pos_event_list WHERE BG_ID = {}'.format(badge_id)
+        self.Cursor.execute(sql)
+        result = self.Cursor.fetchall()
+        print(result)
+        if result != geo_fence_id:
+            return True
+        else:
+            return False
 

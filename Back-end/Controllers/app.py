@@ -195,7 +195,7 @@ def validate_login():
 def check_open():
     employee_id = request.json
     db = DB()
-    door_access = db.get_door_access(employee_id)[2]
+    door_access = db.get_door_access(employee_id)
     db.close()
     return jsonify(door_access)
 
