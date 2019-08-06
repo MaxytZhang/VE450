@@ -212,7 +212,6 @@ class DatabaseOperator:
                     access = 1
                     break
         return access
-                
 
     def meeting_history(self, employee_id):
         sql = 'SELECT MeetingHistory FROM employee WHERE EmployeeID = {}'.format(employee_id)
