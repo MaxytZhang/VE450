@@ -4,6 +4,7 @@ import json
 import MeetingRoom
 import pymysql
 import datetime
+import DatabaseOperator
 
 
 def convert_date(tstp):
@@ -42,17 +43,17 @@ if __name__ == '__main__':
         "meeting_name" : "meeting_1",
         "meeting_topic" : "design review 3 is killing me",
         "meeting_rooms" : ["room1","room2","room3"],
-        "start_timestamp" : 1532440958,
-        "end_timestamp" : 1532440960,
+        "start_timestamp" : 15324409580000,
+        "end_timestamp" : 15324409600000,
         "date": "2016-11-24",
-        "attendees" : {"id1":{"status":-1,"feedback":"coming","role":"staff","site":"site_1"},"id2":{"status":-1,"feedback":"coming","role":"staff","site":"site_2"}},
-        "status" : -1,
+        "attendees" : [{"id": 1, "name": "employee_1", "status": -1, "feedback": "coming", "role": "initiator", "site": "site_1"}, {"id": 2, "name": "employee_2", "status": -1, "feedback": "coming", "role": "staff", "site": "site_2"}, {"id": 3, "name": "employee_3", "status": -1, "feedback": "coming", "role": "staff", "site": "site_1"}],
+        "status" : 1,
         "is_routine" : 0,
         "need_hw_support" : 1,
         "sites" : ["site_1", "site_2"],
         "meeting_memo" : {"id1" : "memo1", "id2" : "memo2"},
         "meeting_outline" : ["outline1", "outline2"],
-        "initiator" : 17
+        "initiator" : 23
     }""")
     meetingRoom = {
         "site_1_1": {
@@ -272,26 +273,30 @@ if __name__ == '__main__':
     # print(currentMeeting.id)
     # print(currentMeeting.attendees)
 
-    recommendation, flag = currentMeeting.recommend()
-    if recommendation == {}:
-        print("No recommendation available, please try some other time.")
-    elif flag == 0:
-        print("The recommended rooms are:")
-        for site_id in recommendation:
-            print(siteList[site_id-1]['name']+':')
-            for room_key in siteList[site_id-1]['meetingRoom']:
-                if meetingRoom[room_key]['id'] in recommendation[site_id]:
-                    print(meetingRoom[room_key]['name'])
-            print('')
-    elif flag == 1:
-        print("We have lowered the capacity to schedule the meeting.\n")
-        print("The recommended rooms are:")
-        for site_id in recommendation:
-            print(siteList[site_id]['name']+':')
-            for room_key in siteList[site_id]['meetingRoom']:
-                if meetingRoom[room_key]['id'] in recommendation[site_id]:
-                    print(meetingRoom[room_key]['name'])
-            print('')
+    # recommendation, flag = currentMeeting.recommend()
+    # if recommendation == {}:
+    #     print("No recommendation available, please try some other time.")
+    # elif flag == 0:
+    #     print("The recommended rooms are:")
+    #     for site_id in recommendation:
+    #         print(siteList[site_id-1]['name']+':')
+    #         for room_key in siteList[site_id-1]['meetingRoom']:
+    #             if meetingRoom[room_key]['id'] in recommendation[site_id]:
+    #                 print(meetingRoom[room_key]['name'])
+    #         print('')
+    # elif flag == 1:
+    #     print("We have lowered the capacity to schedule the meeting.\n")
+    #     print("The recommended rooms are:")
+    #     for site_id in recommendation:
+    #         print(siteList[site_id]['name']+':')
+    #         for room_key in siteList[site_id]['meetingRoom']:
+    #             if meetingRoom[room_key]['id'] in recommendation[site_id]:
+    #                 print(meetingRoom[room_key]['name'])
+    #         print('')
+
+    # DatabaseOperator.DatabaseOperator().selection_list(3)
+    # DatabaseOperator.DatabaseOperator().selection_list_history('meeting_21_15324409580000')
+    # DatabaseOperator.DatabaseOperator().selection_list_meeting(1)
 
     # db_test()
     # new_room = MeetingRoom.MeetingRoom("room_1")

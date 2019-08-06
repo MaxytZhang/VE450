@@ -203,5 +203,10 @@ def get_task(task_id):
     return jsonify({"task": task[0]})
 '''
 
+def selection_list():
+    a = '''SELECT * FROM meeting_test
+    where
+    JSON_CONTAINS('Attendee'->'$[*].id', "12", '$')'''
+
 if __name__ == "__main__":
     app.run(debug=True)
