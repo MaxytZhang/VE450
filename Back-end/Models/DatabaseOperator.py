@@ -22,9 +22,10 @@ class DatabaseOperator:
 
     def validate(self, user):
         print(user)
-        sql = 'select * from gdm64397110_db.employee where EmployeeName = "{}" and Password = {}'.format(user['name'],
-                                                                                                         user[
-                                                                                                             'password'])
+        sql = 'select * from gdm64397110_db.employee where EmployeeName = "{}" and Password = {}'.format(
+            user['name'],
+            user['password']
+        )
         print(sql)
         res = self.Cursor.execute(sql)
         info = self.Cursor.fetchone()

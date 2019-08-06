@@ -48,11 +48,11 @@ if __name__ == '__main__':
         "start_timestamp" : 15324409580000,
         "end_timestamp" : 15324409600000,
         "date": "2016-11-24",
-        "attendees" : [{"id": 1, "name": "employee_1", "status": -1, "feedback": "coming", "role": "initiator", "site": "site_1"}, {"id": 2, "name": "employee_2", "status": -1, "feedback": "coming", "role": "staff", "site": "site_2"}, {"id": 3, "name": "employee_3", "status": -1, "feedback": "coming", "role": "staff", "site": "site_1"}],
+        "attendees" : [{"id": 1, "name": "employee_1", "status": -1, "feedback": "coming", "role": "initiator", "site": 1}, {"id": 2, "name": "employee_2", "status": -1, "feedback": "coming", "role": "staff", "site": 2}, {"id": 3, "name": "employee_3", "status": -1, "feedback": "coming", "role": "staff", "site": 1}],
         "status" : 1,
         "is_routine" : 0,
         "need_hw_support" : 1,
-        "sites" : ["site_1", "site_2"],
+        "sites" : [1, 2],
         "meeting_memo" : {"id1" : "memo1", "id2" : "memo2"},
         "meeting_outline" : ["outline1", "outline2"],
         "initiator" : 24
@@ -223,38 +223,6 @@ if __name__ == '__main__':
             "site": 3
         },
     }
-    siteList = {
-        "site_1": {
-            "name": "SongJiang",
-            "meetingRoom": [
-                "site_1_1",
-                "site_1_2",
-                "site_1_3",
-                "site_1_4",
-                "site_1_5"
-            ],
-            "roomNumber": 5
-        },
-        "site_2": {
-            "name": "LinGang",
-            "meetingRoom": [
-                "site_2_1",
-                "site_2_2",
-                "site_2_3",
-                "site_2_4",
-                "site_2_5"
-            ],
-            "roomNumber": 5
-        },
-        "site_3": {
-            "name": "JI",
-            "meetingRoom": [
-                "site_3_1",
-                "site_3_2"
-            ],
-            "roomNumber": 2
-        }
-    }
     currentMeeting = Meeting.Meeting(json_meeting)
     # currentMeeting.init_db()
     # currentMeeting.id = 1
@@ -265,7 +233,7 @@ if __name__ == '__main__':
     # currentMeeting.start_time = convert_time(1564469999)
     # currentMeeting.end_time = convert_time(1564498799)
     # currentMeeting.attendees = attendeeList
-    currentMeeting.status = 3  # before, during, after
+    # currentMeeting.status = 3  # before, during, after
     # currentMeeting.is_routine = False
     # currentMeeting.requires = False
     # currentMeeting.sites = [1, 2, 3]
@@ -274,28 +242,26 @@ if __name__ == '__main__':
     # currentMeeting.memo = {}
     # print(currentMeeting.id)
     # print(currentMeeting.attendees)
-    currentMeeting.update_db()
+    # currentMeeting.update_db()
 
-    # recommendation, flag = currentMeeting.recommend()
-    # if recommendation == {}:
-    #     print("No recommendation available, please try some other time.")
-    # elif flag == 0:
-    #     print("The recommended rooms are:")
-    #     for site_id in recommendation:
-    #         print(siteList[site_id-1]['name']+':')
-    #         for room_key in siteList[site_id-1]['meetingRoom']:
-    #             if meetingRoom[room_key]['id'] in recommendation[site_id]:
-    #                 print(meetingRoom[room_key]['name'])
-    #         print('')
-    # elif flag == 1:
-    #     print("We have lowered the capacity to schedule the meeting.\n")
-    #     print("The recommended rooms are:")
-    #     for site_id in recommendation:
-    #         print(siteList[site_id]['name']+':')
-    #         for room_key in siteList[site_id]['meetingRoom']:
-    #             if meetingRoom[room_key]['id'] in recommendation[site_id]:
-    #                 print(meetingRoom[room_key]['name'])
-    #         print('')
+    recommendation, flag = currentMeeting.recommend()
+    if recommendation == {}:
+        print("No recommendation available, please try some other time.")
+    elif flag == 0:
+        print("The recommended rooms are:")
+        for site_id in recommendation:
+            print(site_id+':')
+            for room_key in recommendation[str(site_id)]:
+                print(room_key, end=' ')
+            print('')
+    elif flag == 1:
+        print("We have lowered the capacity to schedule the meeting.\n")
+        print("The recommended rooms are:")
+        for site_id in recommendation:
+            print(site_id+':')
+            for room_key in recommendation[str(site_id)]:
+                print(room_key, end=' ')
+            print('')
 
     # DatabaseOperator.DatabaseOperator().selection_list(3)
     # DatabaseOperator.DatabaseOperator().selection_list_history('meeting_21_15324409580000')
