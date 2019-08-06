@@ -153,8 +153,8 @@ class DatabaseOperator:
 
     def update_door_access(self, badge_id, door_access):
         sql = 'UPDATE dooraccess SET Access = %f WHERE BadgeID = %f'
-        data = (badge_id, has_access)
-        self.Cursor.execute(sql)
+        data = (badge_id, door_access)
+        self.Cursor.execute(sql % data)
         self.Database.commit()
         result = self.Cursor.fetchall()
         print(result)
@@ -177,4 +177,16 @@ class DatabaseOperator:
             return True
         else:
             return False
+
+    def badge_to_employee(self, badge_id):
+        sql = 'SELECT EmployeeID FROM employee WHERE BG_ID = %f'
+        data = (badge_id)
+        self.Cursor.execute(sql % data)
+        employee_id = self.Cursor.fetchall()
+        print(result)
+        return employee_id
+
+    def check_if_has_access(self, employee_id):
+        #check future meetings and get the latest one
+        
 
