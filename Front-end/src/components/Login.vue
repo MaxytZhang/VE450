@@ -50,27 +50,17 @@
                             console.log(name);
                             _this.$router.replace('/home')
                         }
+                        else {
+                            _this.$message ({
+                                type: 'error',
+                                message: 'Wrong Account or Password',
+                                showClose: true
+                            });
+                            return false}
                     });
-					// if (this.user.name === "admin" && this.user.pass === "123123") {
-					// 	this.$notify({
-					// 	type: 'success',
-					// 	message: 'Welcome ' + this.user.name,
-					// 	duration: 3000
-					// 	});
-                    //     this.$cookieStore.setCookie( 'name' , this.user.name);
-                    //     let name = this.$cookieStore.getCookie('name');
-                    //     console.log(name);
-					// 	this.$router.replace('/home')
-					// }
-					// else {
-					// 	this.$message ({
-					// 		type: 'error',
-					// 		message: 'Wrong Account or Password',
-					// 		showClose: true
-					// 	})
-					// }
 				}
-				else {return false}
+				else {
+                    return false}
 				})
 			},
 		},
