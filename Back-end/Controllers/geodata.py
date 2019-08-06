@@ -34,12 +34,12 @@ start = time.clock()
 flag = 0
 while True:
 	end = time.clock()
-	if (end - start) > 5 and flag == 0:
+	if (end - start) > 7 and flag == 0:
 		print('Access Granted.')
 		flag = 1
-	if (end - start) > 10 and flag == 1:
+	if (end - start) > 9 and flag == 1:
 		flag = 2
 		print('In Region')
-	if (end - start) > 15 and flag == 2:
+	if (end - start) > 17 and flag == 2:
 		print('Leave Region')
 		flag = 3
