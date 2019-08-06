@@ -194,7 +194,10 @@ def validate_login():
 @app.route('/backend/api/v1.0/check_open', methods = ['POST'])
 def check_open():
     employee_id = request.json
-    return jsonify(True)
+    db = DB()
+    door_access = db.get_door_access(employee_id)
+    db.close()
+    return jsonify(door_access)
 
 @app.route('/backend/api/v1.0/check_notice', methods = ['POST'])
 def check_notice():
