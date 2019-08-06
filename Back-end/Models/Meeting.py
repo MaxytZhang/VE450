@@ -102,10 +102,10 @@ class Meeting:
         site_attendees = {}
         # Count the number of people in each site
         for member in self.attendees:
-            if str(member['site']) in site_attendees:
-                site_attendees[str(member['site'])] += 1
+            if str(member[0]) in site_attendees:
+                site_attendees[str(member[0])] += 1
             else:
-                site_attendees[str(member['site'])] = 1
+                site_attendees[str(member[0])] = 1
         for site_id in site_attendees:
             print(str(site_attendees[site_id]) + ' people in site ' + site_id + ' need to attend the meeting.')
 
