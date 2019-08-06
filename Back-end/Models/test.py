@@ -53,7 +53,7 @@ if __name__ == '__main__':
         "sites" : ["site_1", "site_2"],
         "meeting_memo" : {"id1" : "memo1", "id2" : "memo2"},
         "meeting_outline" : ["outline1", "outline2"],
-        "initiator" : 23
+        "initiator" : 24
     }""")
     meetingRoom = {
         "site_1_1": {
@@ -263,7 +263,7 @@ if __name__ == '__main__':
     # currentMeeting.start_time = convert_time(1564469999)
     # currentMeeting.end_time = convert_time(1564498799)
     # currentMeeting.attendees = attendeeList
-    # currentMeeting.status = -1  # before, during, after
+    currentMeeting.status = 3  # before, during, after
     # currentMeeting.is_routine = False
     # currentMeeting.requires = False
     # currentMeeting.sites = [1, 2, 3]
@@ -272,6 +272,7 @@ if __name__ == '__main__':
     # currentMeeting.memo = {}
     # print(currentMeeting.id)
     # print(currentMeeting.attendees)
+    currentMeeting.update_db()
 
     # recommendation, flag = currentMeeting.recommend()
     # if recommendation == {}:
