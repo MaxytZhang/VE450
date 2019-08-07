@@ -180,6 +180,9 @@ class Meeting:
         # except:
         #     self.update_db()
         self.init_db()
+        for room_id in self.meeting_room_id:
+            room = MeetingRoom.MeetingRoom(room_id)
+            room.set_schedule(self.meeting_id, self.start_time, self.end_time)
 
     def modify(self, meeting_name, meeting_topic, date, start_time, end_time, attendees, is_routine):
         flag = self.start_time == start_time and self.end_time == end_time and self.attendees == attendees
