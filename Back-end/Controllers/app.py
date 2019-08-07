@@ -133,16 +133,13 @@ def initiate_recommend():
     if recommendation == {}:
         pkg = add_message("No recommendation available, please try some other time.", recommendation)
         pkg = add_type("message",pkg)
-        print(pkg)
         return jsonify(pkg)
     elif flag == 0:
         # return jsonify(add_type("recommendation", recommendation))
-        print(recommendation)
         return jsonify(recommendation)
     elif flag == 1:
         pkg = add_type("message and recommendation", recommendation)
         pkg = add_message("We have lowered the capacity to schedule the meeting.", pkg)
-        print(pkg)
         return jsonify(pkg)
 
 @app.route('/backend/api/v1.0/meeting_submit', methods=['GET','POST'])
@@ -156,6 +153,12 @@ def submit_meeting():
     meeting_info = package
     submit_mt = Meeting.Meeting(meeting_info)
     submit_mt.submit()
+    db = DB()
+    db.update_door_access(2,0)
+    for item in submit_mt.attendees:
+        if item['id'] == 42:
+            db.update_door_access(2,1)
+            break
 
 @app.route('/backend/api/v1.0/test', methods=['GET', 'POST'])
 def test():
@@ -213,7 +216,6 @@ def check_open():
     print(employee_id)
     db = DB()
     door_access = db.get_door_access(employee_id)
-    db.close()
     return jsonify(door_access)
 
 @app.route('/backend/api/v1.0/check_notice', methods = ['POST'])
@@ -254,8 +256,6 @@ def get_employee():
 @app.route('/backend/api/v1.0/finish_recommendation', methods = ['POST'])
 def finish_recommendation():
     meeting_info = request.json
-    submit_mt = Meeting(meeting_info)
-    submit_mt.submit()
     print(meeting_info)
     return jsonify(True)
 
