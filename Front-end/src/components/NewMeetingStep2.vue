@@ -68,18 +68,24 @@
                 this.$store.commit('setStep1', {
                     Step1: meetingForm
                 });
-                this.$http.post("/v1.0/meetings", meetingForm).then(function (res) {
+
+                return this.$http.post("/v1.0/meetings", meetingForm).then(function (res) {
                     if (res.status === 200) {
                         console.log(res);
                         _this.$store.commit('setStep2', {
                             Step2: res.data
                         });
+                        _this.$router.push("/new_meeting/step3");
                     }
+                }).catch(function(error) {
+                    console.log(error) // error
                 });
-                this.$router.push("/new_meeting/step3");
             },
             pre(){
                 this.$router.push("/new_meeting/step1");
+            },
+            async waitSubmit(){
+                const result = await this.submit();
             }
         }
     }

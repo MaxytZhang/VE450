@@ -48,7 +48,7 @@
                             console.log(_this.$store.state.Authorization);
                             let name = _this.$cookieStore.getCookie('name');
                             console.log(name);
-                            _this.$router.replace('/home')
+                            _this.$router.replace('/new_meeting')
                         }
                         else {
                             _this.$message ({
@@ -57,7 +57,9 @@
                                 showClose: true
                             });
                             return false}
-                    });
+                    }).catch(function(error) {
+                           console.log(error) // error
+                        });
 				}
 				else {
                     return false}

@@ -16,7 +16,7 @@ Vue.prototype.$cookieStore = {
     delCookie,
 };
 
-axios.defaults.timeout = 5000;
+axios.defaults.timeout = 50000;
 axios.defaults.baseURL = '/api';
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
 axios.interceptors.request.use(
@@ -30,6 +30,9 @@ axios.interceptors.request.use(
     error => {
         return Promise.reject(error);
     });
+
+
+
 
 
 axios.interceptors.response.use(
@@ -48,7 +51,7 @@ axios.interceptors.response.use(
                     })
             }
         }
-        return Promise.reject(error.response.data)
+        return Promise.reject(error)
     });
 
 
