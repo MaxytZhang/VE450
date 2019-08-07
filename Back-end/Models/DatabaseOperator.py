@@ -2,6 +2,11 @@ import pymysql
 import json
 
 
+def convert_back(slot_id):
+    i = slot_id / 4
+    j = slot_id % 4 * 15
+    return '%.2d' % i + ':' + '%.2d' % j
+
 class DatabaseOperator:
 
     def __init__(self):
@@ -227,6 +232,8 @@ class DatabaseOperator:
                  'Status', 'IsRoutine', 'Requires', 'Sites', 'Outline', 'Initiator', 'Memo']
             a = dict(zip(a, result2))
             a['Date'] = str(a['Date'])
+            a['StartTime'] = convert_back(a['StartTime'])
+            a['EndTime'] = convert_back(a['EndTime'])
             return_history['past'].append(a)
         for i in result['present']:
             sql = 'SELECT * FROM meeting WHERE MeetingID = \'{}\''.format(i)
@@ -236,6 +243,8 @@ class DatabaseOperator:
                  'Status', 'IsRoutine', 'Requires', 'Sites', 'Outline', 'Initiator', 'Memo']
             a = dict(zip(a, result2))
             a['Date'] = str(a['Date'])
+            a['StartTime'] = convert_back(a['StartTime'])
+            a['EndTime'] = convert_back(a['EndTime'])
             return_history['present'].append(a)
         for i in result['future']:
             sql = 'SELECT * FROM meeting WHERE MeetingID = \'{}\''.format(i)
@@ -245,6 +254,8 @@ class DatabaseOperator:
                  'Status', 'IsRoutine', 'Requires', 'Sites', 'Outline', 'Initiator', 'Memo']
             a = dict(zip(a, result2))
             a['Date'] = str(a['Date'])
+            a['StartTime'] = convert_back(a['StartTime'])
+            a['EndTime'] = convert_back(a['EndTime'])
             return_history['future'].append(a)
         return return_history
                 

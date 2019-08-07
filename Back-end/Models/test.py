@@ -289,7 +289,8 @@ if __name__ == '__main__':
 
     # DatabaseOperator.DatabaseOperator().selection_list(3)
     # DatabaseOperator.DatabaseOperator().selection_list_history('meeting_21_15324409580000')
-    print(DatabaseOperator.DatabaseOperator().meeting_history(1))
+    print(DatabaseOperator.DatabaseOperator().fetch_meeting_history(1))
+    # print(DatabaseOperator.convert_back(35))
 
     # db_test()
     # new_room = MeetingRoom.MeetingRoom("room_1")
