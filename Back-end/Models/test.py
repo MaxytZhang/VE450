@@ -248,7 +248,7 @@ if __name__ == '__main__':
         },
     }
     currentMeeting = Meeting.Meeting(json_meeting)
-    currentMeeting.submit()
+    # currentMeeting.submit()
     # currentMeeting.id = 1
     # currentMeeting.meeting_name = generate_name(1)
     # currentMeeting.meeting_topic = 'test meeting'
@@ -289,7 +289,7 @@ if __name__ == '__main__':
 
     # DatabaseOperator.DatabaseOperator().selection_list(3)
     # DatabaseOperator.DatabaseOperator().selection_list_history('meeting_21_15324409580000')
-    # print(DatabaseOperator.DatabaseOperator().selection_list_meeting(1))
+    print(DatabaseOperator.DatabaseOperator().meeting_history(1))
 
     # db_test()
     # new_room = MeetingRoom.MeetingRoom("room_1")
