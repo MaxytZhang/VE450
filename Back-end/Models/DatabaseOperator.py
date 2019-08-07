@@ -161,11 +161,11 @@ class DatabaseOperator:
         print(result)
 
     def get_door_access(self, employee_id):
-        sql = 'SELECT door_access FROM dooraccess WHERE EmployeeID = %f'
+        sql = 'SELECT Access FROM dooraccess WHERE EmployeeID = %f'
         data = (employee_id)
         self.Cursor.execute(sql % data)
-        result = self.Cursor.fetchall()[0][0]
-        print(result)
+        result = self.Cursor.fetchall()
+        # print(result)
         return result
 
     def left_meeting_room(self, badge_id, geo_fence_id):

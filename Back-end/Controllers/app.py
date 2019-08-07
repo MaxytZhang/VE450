@@ -212,7 +212,7 @@ def validate_login():
 
 @app.route('/backend/api/v1.0/check_open', methods = ['POST'])
 def check_open():
-    employee_id = request.json
+    employee_id = request.json['id']
     print(employee_id)
     db = DB()
     door_access = db.get_door_access(employee_id)

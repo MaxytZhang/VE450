@@ -8,7 +8,7 @@
 
                 </div>
                 <div class="text item" v-for="(item, i) in meeting_history.present">
-                    No{{i}}   {{item}} <el-button style="float: right; padding: 3px 0" type="text" @click="to_ongoing">check</el-button>
+                    {{item.Name}} {{item.MeetingTopic}} {{item.Date}}  <el-button style="float: right; padding: 3px 0" type="text" @click="to_ongoing">check</el-button>
                 </div>
             </el-card>
             <el-card class="box-card">
@@ -16,7 +16,7 @@
                     <span>Next Meetings</span>
                 </div>
                 <div class="text item" v-for="(item, i) in meeting_history.future">
-                    {{item.Name}} {{item.MeetingTopic}} {{item.date}} <el-button style="float: right; padding: 3px 0" type="text">check</el-button>
+                    {{item.Name}} {{item.MeetingTopic}} {{item.Date}} <el-button style="float: right; padding: 3px 0" type="text">check</el-button>
                 </div>
             </el-card>
             <!--<el-button type="primary" @click="this.to_new">Start A New Meeting</el-button>-->

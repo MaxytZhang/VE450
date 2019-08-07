@@ -2,7 +2,7 @@
     <div>
     <div id="side" >
         <div class="block">
-            <el-avatar :size="100"><img class="side-img" src="../assets/profile.jpeg" alt=""></el-avatar>
+            <el-avatar :size="100"><img class="side-img" src="../assets/avatar.jpg" alt=""></el-avatar>
         </div>
         <el-row class="block">
             <h1>{{this.user_name}}</h1>
@@ -86,7 +86,7 @@
                 let _this = this;
                 this.myInterval = window.setInterval(() => {
                     setTimeout(() => { //调用接口的方法
-                        this.$http.post("/v1.0/check_open", this.user_info.EmployeeID).then(function(res) {
+                        this.$http.post("/v1.0/check_open", {'id': this.user_info.EmployeeID}).then(function(res) {
                             if ((res.status === 200) && (res.data === 0)) {
                                 console.log(res);
                                 _this.$notify({
@@ -142,7 +142,7 @@
             clearInterval(this.myInterval)
         },
         mounted() {
-            // this.check_open();
+            this.check_open();
             // this.check_notice();
         }
     }

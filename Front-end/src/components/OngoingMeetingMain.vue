@@ -73,17 +73,18 @@
             },
             get_ongoing_meeting() {
                 let _this = this;
-                this.$http.post("/v1.0/get_ongoing_meeting", this.user_info.EmployeeID).then(function (res) {
+                this.$http.post("/v1.0/get_meeting_history", {'id': this.user_info.EmployeeID}).then(function (res) {
                     console.log(res);
-                    if ((res.status === 200) && (res.data.going === true)) {
+                    if ((res.status === 200) && (res.data['present'].length > 0)) {
                         console.log(res.data);
-                        _this.meetingForm = res.data
+                        _this.meetingForm = res.data['present']
                     }
                     else {
                         _this.dialogVisible = true
                     }
                 })
             },
+            
             back_to_homepage() {
                 this.$router.replace('/home')
             },
