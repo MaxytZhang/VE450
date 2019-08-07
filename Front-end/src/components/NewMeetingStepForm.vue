@@ -191,7 +191,7 @@
                 props: {multiple: true},
                 datePickerOptions: {
                     disabledDate(time) {
-                        return time.getTime() > Date.now();
+                        return time.getTime() < Date.now();
                     },
                     shortcuts: [{
                         text: 'Today',

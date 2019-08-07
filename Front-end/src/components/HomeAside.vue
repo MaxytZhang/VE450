@@ -87,14 +87,23 @@
                 this.myInterval = window.setInterval(() => {
                     setTimeout(() => { //调用接口的方法
                         this.$http.post("/v1.0/check_open", this.user_info.EmployeeID).then(function(res) {
-                            if ((res.status === 200) && (res.data === true)) {
+                            if ((res.status === 200) && (res.data === 0)) {
                                 console.log(res);
                                 _this.$notify({
                                     type: 'success',
-                                    message: _this.user_name + ': Meeting Room has been opened for you',
+                                    message: _this.user_name + ': You dont have access',
                                     duration: 3000
                                 });
-                            }})
+                            }
+                            else if ((res.status === 200) && (res.data === 2)) {
+                                console.log(res);
+                                _this.$notify({
+                                    type: 'success',
+                                    message: _this.user_name + ': Access granted',
+                                    duration: 3000
+                                });
+                            }
+                        })
                     }, 1)
                 }, 5000);
             },

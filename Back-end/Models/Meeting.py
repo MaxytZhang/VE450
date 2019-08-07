@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import datetime
+import time
 import json
 import pymysql
 from Models.MeetingRoom import MeetingRoom
@@ -33,7 +34,7 @@ def meet_requirements(room_id, number, requires, start_time, end_time, meeting_d
 class Meeting:
     def __init__(self, meeting_info):
         # meeting id = timestamp + initiator id
-        self.meeting_id = 'meeting_' + str(meeting_info['initiator']) + '_' + str(meeting_info['start_timestamp'])
+        self.meeting_id = 'meeting_' + str(meeting_info['initiator']) + '_' + str(int(time.time()))
         self.meeting_name = meeting_info['meeting_name']
         self.meeting_topic = meeting_info['meeting_topic']
         self.meeting_room_id = None
@@ -181,14 +182,14 @@ class Meeting:
         #     self.update_db()
         self.init_db()
         for room_id in self.meeting_room_id:
-            room = MeetingRoom.MeetingRoom(room_id)
+            room = MeetingRoom(room_id)
             room.set_schedule(self.meeting_id, self.start_time, self.end_time)
         for employee in self.attendees:
             self.cursor.execute("SELECT MeetingHistory FROM employee WHERE EmployeeID = {}".format(employee['id']))
             e = json.loads(self.cursor.fetchone()[0])
             e['future'].append(self.meeting_id)
             self.cursor.execute(
-                "UPDATE employee SET MeetingHistory = \'{}\' WHERE EmployeeID = {}".format(e, employee['id']))
+                "UPDATE employee SET MeetingHistory = \'{}\' WHERE EmployeeID = {}".format(json.dumps(e), employee['id']))
             self.db.commit()
 
 
@@ -223,7 +224,7 @@ class Meeting:
             e = json.loads(self.cursor.fetchone()[0])
             e['future'].remove(self.meeting_id)
             e['present'].append(self.meeting_id)
-            self.cursor.execute("UPDATE employee SET MeetingHistory = \'{}\' WHERE EmployeeID = {}".format(e, employee[0]))
+            self.cursor.execute("UPDATE employee SET MeetingHistory = \'{}\' WHERE EmployeeID = {}".format(json.dumps(e), employee[0]))
             self.db.commit()
 
     def end_meeting(self):
@@ -234,5 +235,5 @@ class Meeting:
             e = json.loads(self.cursor.fetchone()[0])
             e['present'].remove(self.meeting_id)
             e['past'].append(self.meeting_id)
-            self.cursor.execute("UPDATE employee SET MeetingHistory = \'{}\' WHERE EmployeeID = {}".format(e, employee[0]))
+            self.cursor.execute("UPDATE employee SET MeetingHistory = \'{}\' WHERE EmployeeID = {}".format(json.dumps(e), employee[0]))
             self.db.commit()

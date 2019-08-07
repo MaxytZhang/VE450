@@ -210,6 +210,7 @@ def validate_login():
 @app.route('/backend/api/v1.0/check_open', methods = ['POST'])
 def check_open():
     employee_id = request.json
+    print(employee_id)
     db = DB()
     door_access = db.get_door_access(employee_id)
     db.close()
@@ -228,12 +229,11 @@ def get_notice():
 
 @app.route('/backend/api/v1.0/get_meeting_history', methods = ['POST'])
 def get_meeting_history():
-    employee_id = request.json
-    return jsonify({
-        'future': [1, 2],
-        'present': [('present', '3')],
-        'past': [('past', '4'), ('past', '5'), ('past', '6')],
-    })
+    employee_id = request.json['id']
+    db = DB()
+    history = db.fetch_meeting_history(employee_id)
+    print('history', history)
+    return jsonify(history)
 
 @app.route('/backend/api/v1.0/get_ongoing_meeting', methods = ['POST'])
 def get_ongoing_meeting():

@@ -16,7 +16,7 @@
                     <span>Next Meetings</span>
                 </div>
                 <div class="text item" v-for="(item, i) in meeting_history.future">
-                    No{{i}}   {{item}}<el-button style="float: right; padding: 3px 0" type="text">check</el-button>
+                    {{item.Name}} {{item.MeetingTopic}} {{item.date}} <el-button style="float: right; padding: 3px 0" type="text">check</el-button>
                 </div>
             </el-card>
             <!--<el-button type="primary" @click="this.to_new">Start A New Meeting</el-button>-->
@@ -66,7 +66,7 @@
             },
             get_meeting_history() {
                 let _this = this;
-                this.$http.post("/v1.0/get_meeting_history", this.user_info.EmployeeID).then(function(res) {
+                this.$http.post("/v1.0/get_meeting_history", {'id': this.user_info.EmployeeID}).then(function(res) {
                     console.log(res);
                     // console.log(this.$cookieStore.getCookie('name'));
                     _this.meeting_history = res.data;

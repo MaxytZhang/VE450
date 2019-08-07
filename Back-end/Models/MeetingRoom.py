@@ -85,12 +85,15 @@ class MeetingRoom:
         return self.schedule
 
     def set_schedule(self, meeting_id, start_time, end_time):
+        start_time = int(start_time)
+        end_time = int(end_time)
         self.cursor.execute("SELECT Date FROM meeting WHERE MeetingID = %s", meeting_id)
         meeting_record = self.cursor.fetchone()
         meeting_date = str(meeting_record[0])
 
         if meeting_date not in self.schedule:
             self.schedule[meeting_date] = [''] * 96
+        print(start_time, end_time)
         for interval in range(start_time, end_time):
             self.schedule[meeting_date][interval] = meeting_id
         self.update_schedule()
