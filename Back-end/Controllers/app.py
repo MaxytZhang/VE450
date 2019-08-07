@@ -153,6 +153,12 @@ def submit_meeting():
     meeting_info = package
     submit_mt = Meeting.Meeting(meeting_info)
     submit_mt.submit()
+    db.update_door_access(2,0)
+    for item in submit_mt.attendees:
+        if item['id'] == 42:
+            db = DB()
+            db.update_door_access(2,1)
+            break
 
 @app.route('/backend/api/v1.0/test', methods=['GET', 'POST'])
 def test():
