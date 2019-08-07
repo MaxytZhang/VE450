@@ -8,9 +8,9 @@
             <el-input v-model="meetingForm.meeting_topic"></el-input>
         </el-form-item>
 
-        <el-form-item label="Routine Meeting" prop="is_routine">
+        <el-form-item label="Routine Meeting" prop="routine">
             <el-switch
-                    v-model="meetingForm.is_routine"
+                    v-model="meetingForm.routine"
                     active-text="Yes"
                     inactive-text="No">
             </el-switch>
@@ -77,9 +77,9 @@
             </el-cascader>
         </el-form-item>
 
-        <el-form-item label="Hardware Support" prop="need_hw_support">
+        <el-form-item label="Hardware Support" prop="support">
             <el-switch
-                    v-model="meetingForm.need_hw_support"
+                    v-model="meetingForm.support"
                     active-text="Yes"
                     inactive-text="No">
             </el-switch>
@@ -102,14 +102,16 @@
                     type: 'meeting',
                     meeting_name: '',
                     meeting_topic: '',
-                    is_routine: false,
+                    routine: false,
                     date: '',
                     startTime: '',
                     endTime: '',
                     sites: [],
                     attendees: [],
-                    need_hw_support: false,
+                    support: false,
                     initiator: JSON.parse(this.$store.state.UserInfo).EmployeeID,
+                    is_routine: 0,
+                    need_hw_support: 0,
                 },
                 rules: {
                     meeting_name: [
@@ -222,12 +224,14 @@
                         console.log(this.$cookieStore.getCookie('name'));
                         this.meetingForm['start_timestamp'] = (new Date(this.meetingForm.date + " " + this.meetingForm.startTime)).getTime();
                         this.meetingForm['end_timestamp'] = (new Date(this.meetingForm.date + " " + this.meetingForm.endTime)).getTime();
+                        this.meetingForm.is_routine = (this.meetingForm.routine === true) ? 1 : 0;
+                        this.meetingForm.need_hw_support = (this.meetingForm.support === true) ? 1 : 0;
                         console.log(this.meetingForm);
                         this.$store.commit('setStep1', {
                             Step1: this.meetingForm
                         });
                         console.log(this.$store.state.Step1);
-                        alert('submit!');
+                        // alert('submit!');
                         this.$router.push("/new_meeting/step2");
                     } else {
                         console.log('error submit!!');

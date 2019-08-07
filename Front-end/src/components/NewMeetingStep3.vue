@@ -1,5 +1,14 @@
 <template>
     <div>
+        <el-dialog
+                title="Notice"
+                :visible.sync="dialogVisible"
+                width="30%">
+            <span>You're all set! Take your time!</span>
+            <span slot="footer" class="dialog-footer">
+            <el-button type="primary" @click = "back_to_homepage" >Back to homepage</el-button>
+        </span>
+        </el-dialog>
         <el-row type="flex" class="block">
             <el-col :span="4"><span>Meeting Room Recommendation</span></el-col>
             <el-cascader-panel :options="options" :props="props" v-model="meeting_room"></el-cascader-panel>
@@ -68,7 +77,8 @@
                 ],
                 props: {multiple: true},
                 active: 2,
-                meeting_room: []
+                meeting_room: [],
+                dialogVisible: false
             }
         },
         created() {
@@ -82,11 +92,13 @@
                 this.$http.post("/v1.0/finish_recommendation", meetingForm).then(function (res) {
                     console.log(res);
                     if (res.status === 200) {
-
+                        // _this.dialogVisible = true
                     }
                     else {
 
                     }
+                }).catch(function(error) {
+                    console.log(error) // error
                 });
                 this.$router.push("/new_meeting/step4");
             },
@@ -99,6 +111,9 @@
                 this.options = options;
                 // console.log(meetingForm);
                 console.log(options)
+            },
+            back_to_homepage() {
+                this.$router.replace('/home')
             },
         }
     }

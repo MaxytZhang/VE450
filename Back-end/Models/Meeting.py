@@ -2,8 +2,8 @@
 import datetime
 import json
 import pymysql
-from MeetingRoom import MeetingRoom
-from DatabaseOperator import DatabaseOperator
+from Models.MeetingRoom import MeetingRoom
+from Models.DatabaseOperator import DatabaseOperator
 
 
 def convert_date(tstp):
@@ -180,6 +180,17 @@ class Meeting:
         # except:
         #     self.update_db()
         self.init_db()
+        for room_id in self.meeting_room_id:
+            room = MeetingRoom.MeetingRoom(room_id)
+            room.set_schedule(self.meeting_id, self.start_time, self.end_time)
+        for employee in self.attendees:
+            self.cursor.execute("SELECT MeetingHistory FROM employee WHERE EmployeeID = {}".format(employee['id']))
+            e = json.loads(self.cursor.fetchone()[0])
+            e['future'].append(self.meeting_id)
+            self.cursor.execute(
+                "UPDATE employee SET MeetingHistory = \'{}\' WHERE EmployeeID = {}".format(e, employee['id']))
+            self.db.commit()
+
 
     def modify(self, meeting_name, meeting_topic, date, start_time, end_time, attendees, is_routine):
         flag = self.start_time == start_time and self.end_time == end_time and self.attendees == attendees
