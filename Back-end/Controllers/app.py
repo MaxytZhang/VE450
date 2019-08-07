@@ -215,7 +215,6 @@ def check_open():
     employee_id = request.json
     db = DB()
     door_access = db.get_door_access(employee_id)
-    db.close()
     return jsonify(door_access)
 
 @app.route('/backend/api/v1.0/check_notice', methods = ['POST'])

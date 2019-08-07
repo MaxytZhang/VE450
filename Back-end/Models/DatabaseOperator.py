@@ -164,7 +164,7 @@ class DatabaseOperator:
         sql = 'SELECT door_access FROM dooraccess WHERE EmployeeID = %f'
         data = (employee_id)
         self.Cursor.execute(sql % data)
-        result = self.Cursor.fetchall()
+        result = self.Cursor.fetchall()[0][0]
         print(result)
         return result
 
